@@ -1,4 +1,4 @@
-name: FoF Polls PHP
+name: Lottery PHP
 
 on: [workflow_dispatch, push, pull_request]
 

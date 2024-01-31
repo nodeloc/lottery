@@ -14,7 +14,7 @@ export default class ListVotersModal extends Modal {
     this.loading = Stream(true);
 
     app.store
-      .find('fof/polls', this.attrs.poll.id(), {
+      .find('nodeloc/lottery', this.attrs.lottery.id(), {
         include: 'votes,votes.user,votes.option',
       })
       .then(() => this.loading(false))
@@ -26,15 +26,15 @@ export default class ListVotersModal extends Modal {
   }
 
   title() {
-    return app.translator.trans('fof-polls.forum.votes_modal.title');
+    return app.translator.trans('nodeloc-lottery.forum.votes_modal.title');
   }
 
   content() {
-    return <div className="Modal-body">{this.loading() ? <LoadingIndicator /> : this.attrs.poll.options().map(this.optionContent.bind(this))}</div>;
+    return <div className="Modal-body">{this.loading() ? <LoadingIndicator /> : this.attrs.lottery.options().map(this.optionContent.bind(this))}</div>;
   }
 
   optionContent(opt) {
-    const votes = (this.attrs.poll.votes() || []).filter((v) => opt.id() === v.option().id());
+    const votes = (this.attrs.lottery.votes() || []).filter((v) => opt.id() === v.option().id());
 
     return (
       <div className="VotesModal-option">
@@ -43,7 +43,7 @@ export default class ListVotersModal extends Modal {
         {votes.length ? (
           <div className="VotesModal-list">{votes.map(this.voteContent.bind(this))}</div>
         ) : (
-          <h4>{app.translator.trans('fof-polls.forum.modal.no_voters')}</h4>
+          <h4>{app.translator.trans('nodeloc-lottery.forum.modal.no_voters')}</h4>
         )}
       </div>
     );

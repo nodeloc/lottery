@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of fof/polls.
+ * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace FoF\Polls\Api;
+namespace Nodeloc\Lottery\Api;
 
 use Flarum\Api\Serializer\ForumSerializer;
 
@@ -17,7 +17,7 @@ class AddForumAttributes
 {
     public function __invoke(ForumSerializer $serializer, array $model, array $attributes): array
     {
-        $attributes['canStartPolls'] = $serializer->getActor()->can('discussion.polls.start');
+        $attributes['canStartLottery'] = $serializer->getActor()->can('discussion.lottery.start');
 
         return $attributes;
     }

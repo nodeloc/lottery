@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,10 +12,10 @@
 namespace Nodeloc\Lottery\Events;
 
 use Flarum\User\User;
-use Nodeloc\Lottery\Poll;
-use Nodeloc\Lottery\PollVote;
+use Nodeloc\Lottery\Lottery;
+use Nodeloc\Lottery\LotteryVote;
 
-class PollWasVoted
+class LotteryWasVoted
 {
     /**
      * @var User
@@ -23,12 +23,12 @@ class PollWasVoted
     public $actor;
 
     /**
-     * @var Poll
+     * @var Lottery
      */
-    public $poll;
+    public $lottery;
 
     /**
-     * @var PollVote
+     * @var LotteryVote
      */
     public $vote;
 
@@ -38,17 +38,17 @@ class PollWasVoted
     public $changed;
 
     /**
-     * PollWasCreated constructor.
+     * LotteryWasCreated constructor.
      *
      * @param User     $actor
-     * @param Poll     $poll
-     * @param PollVote $vote
+     * @param Lottery     $lottery
+     * @param LotteryVote $vote
      * @param bool     $changed
      */
-    public function __construct(User $actor, Poll $poll, PollVote $vote, $changed = false)
+    public function __construct(User $actor, Lottery $lottery, LotteryVote $vote, $changed = false)
     {
         $this->actor = $actor;
-        $this->poll = $poll;
+        $this->lottery = $lottery;
         $this->vote = $vote;
         $this->changed = $changed;
     }

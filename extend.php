@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of fof/polls.
+ * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace FoF\Polls;
+namespace Nodeloc\Lottery;
 
 use Flarum\Api\Controller;
 use Flarum\Api\Serializer\DiscussionSerializer;
@@ -20,8 +20,8 @@ use Flarum\Extend;
 use Flarum\Post\Event\Saving as PostSaving;
 use Flarum\Post\Post;
 use Flarum\Settings\Event\Saved as SettingsSaved;
-use FoF\Polls\Api\Controllers;
-use FoF\Polls\Api\Serializers\PollSerializer;
+use Nodeloc\Lottery\Api\Controllers;
+use Nodeloc\Lottery\Api\Serializers\LotterySerializer;
 
 return [
     (new Extend\Frontend('forum'))
@@ -35,71 +35,71 @@ return [
     new Extend\Locales(__DIR__.'/resources/locale'),
 
     (new Extend\Routes('api'))
-        ->post('/fof/polls', 'fof.polls.create', Controllers\CreatePollController::class)
-        ->get('/fof/polls/{id}', 'fof.polls.show', Controllers\ShowPollController::class)
-        ->patch('/fof/polls/{id}', 'fof.polls.edit', Controllers\EditPollController::class)
-        ->delete('/fof/polls/{id}', 'fof.polls.delete', Controllers\DeletePollController::class)
-        ->patch('/fof/polls/{id}/votes', 'fof.polls.votes', Controllers\MultipleVotesPollController::class),
+        ->post('/nodeloc/lottery', 'nodeloc.lottery.create', Controllers\CreateLotteryController::class)
+        ->get('/nodeloc/lottery/{id}', 'nodeloc.lottery.show', Controllers\ShowLotteryController::class)
+        ->patch('/nodeloc/lottery/{id}', 'nodeloc.lottery.edit', Controllers\EditLotteryController::class)
+        ->delete('/nodeloc/lottery/{id}', 'nodeloc.lottery.delete', Controllers\DeleteLotteryController::class)
+        ->patch('/nodeloc/lottery/{id}/votes', 'nodeloc.lottery.votes', Controllers\MultipleVotesLotteryController::class),
 
     (new Extend\Model(Post::class))
-        ->hasMany('polls', Poll::class, 'post_id', 'id'),
+        ->hasMany('lottery', Lottery::class, 'post_id', 'id'),
 
     (new Extend\Model(Discussion::class))
-        ->hasMany('polls', Poll::class, 'post_id', 'first_post_id'),
+        ->hasMany('lottery', Lottery::class, 'post_id', 'first_post_id'),
 
     (new Extend\Event())
-        ->listen(PostSaving::class, Listeners\SavePollsToDatabase::class)
+        ->listen(PostSaving::class, Listeners\SaveLotteryToDatabase::class)
         ->listen(SettingsSaved::class, Listeners\ClearFormatterCache::class),
 
     (new Extend\ApiSerializer(DiscussionSerializer::class))
         ->attributes(Api\AddDiscussionAttributes::class),
 
     (new Extend\ApiSerializer(PostSerializer::class))
-        ->hasMany('polls', PollSerializer::class)
+        ->hasMany('lottery', LotterySerializer::class)
         ->attributes(Api\AddPostAttributes::class),
 
     (new Extend\ApiSerializer(ForumSerializer::class))
         ->attributes(Api\AddForumAttributes::class),
 
     (new Extend\ApiController(Controller\ListDiscussionsController::class))
-        ->addOptionalInclude(['firstPost.polls']),
+        ->addOptionalInclude(['firstPost.lottery']),
 
     (new Extend\ApiController(Controller\ShowDiscussionController::class))
-        ->addInclude(['posts.polls', 'posts.polls.options', 'posts.polls.myVotes', 'posts.polls.myVotes.option'])
-        ->addOptionalInclude(['posts.polls.votes', 'posts.polls.votes.user', 'posts.polls.votes.option']),
+        ->addInclude(['posts.lottery', 'posts.lottery.options', 'posts.lottery.myVotes', 'posts.lottery.myVotes.option'])
+        ->addOptionalInclude(['posts.lottery.votes', 'posts.lottery.votes.user', 'posts.lottery.votes.option']),
 
     (new Extend\ApiController(Controller\CreateDiscussionController::class))
-        ->addInclude(['firstPost.polls', 'firstPost.polls.options', 'firstPost.polls.myVotes', 'firstPost.polls.myVotes.option'])
-        ->addOptionalInclude(['firstPost.polls.votes', 'firstPost.polls.votes.user', 'firstPost.polls.votes.option']),
+        ->addInclude(['firstPost.lottery', 'firstPost.lottery.options', 'firstPost.lottery.myVotes', 'firstPost.lottery.myVotes.option'])
+        ->addOptionalInclude(['firstPost.lottery.votes', 'firstPost.lottery.votes.user', 'firstPost.lottery.votes.option']),
 
     (new Extend\ApiController(Controller\CreatePostController::class))
-        ->addInclude(['polls', 'polls.options', 'polls.myVotes', 'polls.myVotes.option'])
-        ->addOptionalInclude(['polls.votes', 'polls.votes.user', 'polls.votes.option']),
+        ->addInclude(['lottery', 'lottery.options', 'lottery.myVotes', 'lottery.myVotes.option'])
+        ->addOptionalInclude(['lottery.votes', 'lottery.votes.user', 'lottery.votes.option']),
 
     (new Extend\ApiController(Controller\ListPostsController::class))
-        ->addInclude(['polls', 'polls.options', 'polls.myVotes', 'polls.myVotes.option'])
-        ->addOptionalInclude(['polls.votes', 'polls.votes.user', 'polls.votes.option']),
+        ->addInclude(['lottery', 'lottery.options', 'lottery.myVotes', 'lottery.myVotes.option'])
+        ->addOptionalInclude(['lottery.votes', 'lottery.votes.user', 'lottery.votes.option']),
 
     (new Extend\ApiController(Controller\ShowPostController::class))
-        ->addInclude(['polls', 'polls.options', 'polls.myVotes', 'polls.myVotes.option'])
-        ->addOptionalInclude(['polls.votes', 'polls.votes.user', 'polls.votes.option']),
+        ->addInclude(['lottery', 'lottery.options', 'lottery.myVotes', 'lottery.myVotes.option'])
+        ->addOptionalInclude(['lottery.votes', 'lottery.votes.user', 'lottery.votes.option']),
 
     (new Extend\Console())
         ->command(Console\RefreshVoteCountCommand::class),
 
     (new Extend\Policy())
-        ->modelPolicy(Poll::class, Access\PollPolicy::class)
+        ->modelPolicy(Lottery::class, Access\LotteryPolicy::class)
         ->modelPolicy(Post::class, Access\PostPolicy::class),
 
     (new Extend\Settings())
-        ->default('fof-polls.maxOptions', 10)
-        ->default('fof-polls.optionsColorBlend', true)
-        ->serializeToForum('allowPollOptionImage', 'fof-polls.allowOptionImage', 'boolval')
-        ->serializeToForum('pollMaxOptions', 'fof-polls.maxOptions', 'intval')
-        ->registerLessConfigVar('fof-polls-options-color-blend', 'fof-polls.optionsColorBlend', function ($value) {
+        ->default('nodeloc-lottery.maxOptions', 10)
+        ->default('nodeloc-lottery.optionsColorBlend', true)
+        ->serializeToForum('allowLotteryOptionImage', 'nodeloc-lottery.allowOptionImage', 'boolval')
+        ->serializeToForum('lotteryMaxOptions', 'nodeloc-lottery.maxOptions', 'intval')
+        ->registerLessConfigVar('nodeloc-lottery-options-color-blend', 'nodeloc-lottery.optionsColorBlend', function ($value) {
             return $value ? 'true' : 'false';
         }),
 
-    (new Extend\ModelVisibility(Poll::class))
-        ->scope(Access\ScopePollVisibility::class),
+    (new Extend\ModelVisibility(Lottery::class))
+        ->scope(Access\ScopeLotteryVisibility::class),
 ];

@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,7 +22,7 @@ use Illuminate\Support\Arr;
 /**
  * @property int    $id
  * @property string $question
- * @property-read bool             $public_poll
+ * @property-read bool             $public_lottery
  * @property-read bool             $allow_multiple_votes
  * @property-read int              $max_votes
  * @property-read bool             $hide_votes
@@ -36,12 +36,11 @@ use Illuminate\Support\Arr;
  * @property \Carbon\Carbon        $created_at
  * @property \Carbon\Carbon        $updated_at
  * @property PollSettings          $settings
- * @property PollVote[]|Collection $votes
- * @property PollVote[]|Collection $myVotes
+ * @property LotteryVote[]|Collection $votes
+ * @property LotteryVote[]|Collection $myVotes
  *
- *  @phpstan-type PollSettings     array{'public_poll': bool, 'allow_multiple_votes': bool, 'max_votes': int}
  */
-class Poll extends AbstractModel
+class Lottery extends AbstractModel
 {
     use ScopeVisibilityTrait;
 
@@ -68,21 +67,21 @@ class Poll extends AbstractModel
      */
     public static function build($question, $postId, $actorId, $endDate, $publicPoll, $allowMultipleVotes = false, $maxVotes = 0, $hideVotes = false, $allowChangeVote = true)
     {
-        $poll = new static();
+        $lottery = new static();
 
-        $poll->question = $question;
-        $poll->post_id = $postId;
-        $poll->user_id = $actorId;
-        $poll->end_date = $endDate;
-        $poll->settings = [
-            'public_poll'          => $publicPoll,
+        $lottery->question = $question;
+        $lottery->post_id = $postId;
+        $lottery->user_id = $actorId;
+        $lottery->end_date = $endDate;
+        $lottery->settings = [
+            'public_lottery'          => $publicPoll,
             'allow_multiple_votes' => $allowMultipleVotes,
             'max_votes'            => min(0, (int) $maxVotes),
             'hide_votes'           => $hideVotes,
             'allow_change_vote'    => $allowChangeVote,
         ];
 
-        return $poll;
+        return $lottery;
     }
 
     /**
@@ -114,7 +113,7 @@ class Poll extends AbstractModel
      */
     public function options()
     {
-        return $this->hasMany(PollOption::class);
+        return $this->hasMany(LotteryOption::class);
     }
 
     /**
@@ -122,7 +121,7 @@ class Poll extends AbstractModel
      */
     public function votes()
     {
-        return $this->hasMany(PollVote::class);
+        return $this->hasMany(LotteryVote::class);
     }
 
     public function refreshVoteCount(): self
@@ -148,7 +147,7 @@ class Poll extends AbstractModel
 
     protected function getPublicPollAttribute()
     {
-        return (bool) Arr::get($this->settings, 'public_poll');
+        return (bool) Arr::get($this->settings, 'public_lottery');
     }
 
     protected function getAllowMultipleVotesAttribute()

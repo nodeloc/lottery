@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,18 +13,18 @@ namespace Nodeloc\Lottery\Api\Controllers;
 
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Http\RequestUtil;
-use Nodeloc\Lottery\Api\Serializers\PollSerializer;
+use Nodeloc\Lottery\Api\Serializers\LotterySerializer;
 use Nodeloc\Lottery\PollRepository;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class ShowPollController extends AbstractShowController
+class ShowLotteryController extends AbstractShowController
 {
     /**
      * {@inheritdoc}
      */
-    public $serializer = PollSerializer::class;
+    public $serializer = LotterySerializer::class;
 
     public $include = ['options', 'myVotes', 'myVotes.option'];
 
@@ -33,11 +33,11 @@ class ShowPollController extends AbstractShowController
     /**
      * @var PollRepository
      */
-    protected $polls;
+    protected $lottery;
 
-    public function __construct(PollRepository $polls)
+    public function __construct(PollRepository $lottery)
     {
-        $this->polls = $polls;
+        $this->lottery = $lottery;
     }
 
     /**
@@ -45,7 +45,7 @@ class ShowPollController extends AbstractShowController
      */
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        return $this->polls->findOrFail(
+        return $this->lottery->findOrFail(
             Arr::get($request->getQueryParams(), 'id'),
             RequestUtil::getActor($request)
         );

@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,49 +12,49 @@
 namespace Nodeloc\Lottery\Api\Serializers;
 
 use Flarum\Api\Serializer\AbstractSerializer;
-use Nodeloc\Lottery\Poll;
+use Nodeloc\Lottery\Lottery;
 
-class PollSerializer extends AbstractSerializer
+class LotterySerializer extends AbstractSerializer
 {
     /**
      * @var string
      */
-    protected $type = 'polls';
+    protected $type = 'lottery';
 
     /**
      * Get the default set of serialized attributes for a model.
      *
-     * @param Poll $poll
+     * @param Lottery $lottery
      *
      * @return array
      */
-    protected function getDefaultAttributes($poll)
+    protected function getDefaultAttributes($lottery)
     {
-        $canEdit = $this->actor->can('edit', $poll);
+        $canEdit = $this->actor->can('edit', $lottery);
 
         $attributes = [
-            'question'           => $poll->question,
-            'hasEnded'           => $poll->hasEnded(),
-            'allowMultipleVotes' => $poll->allow_multiple_votes,
-            'maxVotes'           => $poll->max_votes,
-            'endDate'            => $this->formatDate($poll->end_date),
-            'createdAt'          => $this->formatDate($poll->created_at),
-            'updatedAt'          => $this->formatDate($poll->updated_at),
-            'canVote'            => $this->actor->can('vote', $poll),
+            'question'           => $lottery->question,
+            'hasEnded'           => $lottery->hasEnded(),
+            'allowMultipleVotes' => $lottery->allow_multiple_votes,
+            'maxVotes'           => $lottery->max_votes,
+            'endDate'            => $this->formatDate($lottery->end_date),
+            'createdAt'          => $this->formatDate($lottery->created_at),
+            'updatedAt'          => $this->formatDate($lottery->updated_at),
+            'canVote'            => $this->actor->can('vote', $lottery),
             'canEdit'            => $canEdit,
-            'canDelete'          => $this->actor->can('delete', $poll),
-            'canSeeVoters'       => $this->actor->can('seeVoters', $poll),
-            'canChangeVote'      => $this->actor->can('changeVote', $poll),
+            'canDelete'          => $this->actor->can('delete', $lottery),
+            'canSeeVoters'       => $this->actor->can('seeVoters', $lottery),
+            'canChangeVote'      => $this->actor->can('changeVote', $lottery),
         ];
 
-        if ($this->actor->can('seeVoteCount', $poll)) {
-            $attributes['voteCount'] = (int) $poll->vote_count;
+        if ($this->actor->can('seeVoteCount', $lottery)) {
+            $attributes['voteCount'] = (int) $lottery->vote_count;
         }
 
         if ($canEdit) {
-            $attributes['publicPoll'] = $poll->public_poll;
-            $attributes['hideVotes'] = $poll->hide_votes;
-            $attributes['allowChangeVote'] = $poll->allow_change_vote;
+            $attributes['publicPoll'] = $lottery->public_lottery;
+            $attributes['hideVotes'] = $lottery->hide_votes;
+            $attributes['allowChangeVote'] = $lottery->allow_change_vote;
         }
 
         return $attributes;
@@ -64,7 +64,7 @@ class PollSerializer extends AbstractSerializer
     {
         return $this->hasMany(
             $model,
-            PollOptionSerializer::class
+            LotteryOptionSerializer::class
         );
     }
 
@@ -76,20 +76,20 @@ class PollSerializer extends AbstractSerializer
 
         return $this->hasMany(
             $model,
-            PollVoteSerializer::class
+            LotteryVoteSerializer::class
         );
     }
 
     public function myVotes($model)
     {
-        Poll::setStateUser($this->actor);
+        Lottery::setStateUser($this->actor);
 
         // When called inside ShowDiscussionController, Flarum has already pre-loaded our relationship incorrectly
         $model->unsetRelation('myVotes');
 
         return $this->hasMany(
             $model,
-            PollVoteSerializer::class
+            LotteryVoteSerializer::class
         );
     }
 }

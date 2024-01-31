@@ -1,11 +1,11 @@
 import Model from 'flarum/common/Model';
 
-export default class PollOption extends Model {
+export default class LotteryOption extends Model {
   answer = Model.attribute('answer');
   imageUrl = Model.attribute('imageUrl');
   voteCount = Model.attribute('voteCount');
 
-  poll = Model.hasOne('polls');
+  lottery = Model.hasOne('lottery');
   votes = Model.hasMany('votes');
 
   apiEndpoint() {

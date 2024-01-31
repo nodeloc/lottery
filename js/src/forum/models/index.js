@@ -1,9 +1,9 @@
-import Poll from './Poll';
-import PollOption from './PollOption';
-import PollVote from './PollVote';
+import Lottery from './Lottery';
+import LotteryOption from './LotteryOption';
+import LotteryVote from './LotteryVote';
 
 export const models = {
-  Poll,
-  PollOption,
-  PollVote,
+  Poll: Lottery,
+  PollOption: LotteryOption,
+  PollVote: LotteryVote,
 };

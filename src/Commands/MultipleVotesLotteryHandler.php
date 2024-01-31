@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,10 +15,10 @@ use Flarum\Foundation\ErrorHandling\Reporter;
 use Flarum\Foundation\ValidationException;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\PermissionDeniedException;
-use Nodeloc\Lottery\Events\PollVotesChanged;
-use Nodeloc\Lottery\Events\PollWasVoted;
-use Nodeloc\Lottery\Poll;
-use Nodeloc\Lottery\PollRepository;
+use Nodeloc\Lottery\Events\LotteryVotesChanged;
+use Nodeloc\Lottery\Events\LotteryWasVoted;
+use Nodeloc\Lottery\Lottery;
+use Nodeloc\Lottery\LotteryRepository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\ConnectionResolverInterface;
@@ -26,7 +26,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Validation\Factory;
 use Pusher;
 
-class MultipleVotesPollHandler
+class MultipleVotesLotteryHandler
 {
     /**
      * @var Dispatcher
@@ -54,18 +54,18 @@ class MultipleVotesPollHandler
     private $db;
 
     /**
-     * @var PollRepository
+     * @var LotteryRepository
      */
-    private $polls;
+    private $lottery;
 
     /**
      * @param Dispatcher                  $events
      * @param SettingsRepositoryInterface $settings
      * @param Container                   $container
      */
-    public function __construct(PollRepository $polls, Dispatcher $events, SettingsRepositoryInterface $settings, Container $container, Factory $validation, ConnectionResolverInterface $db)
+    public function __construct(LotteryRepository $lottery, Dispatcher $events, SettingsRepositoryInterface $settings, Container $container, Factory $validation, ConnectionResolverInterface $db)
     {
-        $this->polls = $polls;
+        $this->lottery = $lottery;
         $this->events = $events;
         $this->settings = $settings;
         $this->container = $container;
@@ -77,20 +77,20 @@ class MultipleVotesPollHandler
      * @throws PermissionDeniedException
      * @throws ValidationException
      */
-    public function handle(MultipleVotesPoll $command)
+    public function handle(MultipleVotesLottery $command)
     {
         $actor = $command->actor;
         $data = $command->data;
 
-        $poll = $this->polls->findOrFail($command->pollId, $actor);
+        $lottery = $this->lottery->findOrFail($command->lotteryId, $actor);
 
-        $actor->assertCan('vote', $poll);
+        $actor->assertCan('vote', $lottery);
 
         $optionIds = Arr::get($data, 'optionIds');
-        $options = $poll->options;
-        $myVotes = $poll->myVotes($actor)->get();
+        $options = $lottery->options;
+        $myVotes = $lottery->myVotes($actor)->get();
 
-        $maxVotes = $poll->allow_multiple_votes ? $poll->max_votes : 1;
+        $maxVotes = $lottery->allow_multiple_votes ? $lottery->max_votes : 1;
 
         if ($maxVotes == 0) {
             $maxVotes = $options->count();
@@ -125,18 +125,18 @@ class MultipleVotesPollHandler
         });
 
         /** @phpstan-ignore-next-line */
-        $this->db->transaction(function () use ($myVotes, $options, $newOptionIds, $deletedVotes, $poll, $actor) {
+        $this->db->transaction(function () use ($myVotes, $options, $newOptionIds, $deletedVotes, $lottery, $actor) {
             // Unvote options
             if ($deletedVotes->isNotEmpty()) {
-                $poll->myVotes($actor)->whereIn('id', $deletedVotes->pluck('id'))->delete();
+                $lottery->myVotes($actor)->whereIn('id', $deletedVotes->pluck('id'))->delete();
                 $deletedVotes->each->unsetRelation('option');
 
                 $myVotes->forget($deletedVotes->pluck('id')->toArray());
             }
 
             // Vote options
-            $newOptionIds->each(function ($optionId) use ($myVotes, $poll, $actor) {
-                $vote = $poll->votes()->create([
+            $newOptionIds->each(function ($optionId) use ($myVotes, $lottery, $actor) {
+                $vote = $lottery->votes()->create([
                     'user_id'   => $actor->id,
                     'option_id' => $optionId,
                 ]);
@@ -144,32 +144,32 @@ class MultipleVotesPollHandler
                 $myVotes->push($vote);
             });
 
-            // Update vote counts of options & poll
+            // Update vote counts of options & lottery
             $changedOptions = $options->whereIn('id', $deletedVotes->pluck('option_id')->toArray())
                 ->concat($options->whereIn('id', $newOptionIds->toArray()));
 
             $changedOptions->each->refreshVoteCount()->each->save();
 
             if ($deletedVotes->isNotEmpty() || $newOptionIds->isNotEmpty()) {
-                $poll->refreshVoteCount()->save();
+                $lottery->refreshVoteCount()->save();
             }
         });
 
         $currentVoteOptions = $options->whereIn('id', $myVotes->pluck('option_id'))->except($deletedVotes->pluck('option_id')->toArray());
         $deletedVoteOptions = $options->whereIn('id', $deletedVotes->pluck('option_id'));
 
-        // Legacy event for backward compatibility with single-vote polls. Can be removed in breaking release.
-        if (!$poll->allow_multiple_votes && !$myVotes->isEmpty()) {
-            $this->events->dispatch(new PollWasVoted($actor, $poll, $myVotes->first(), !$deletedVotes->isEmpty() && !$newOptionIds->isEmpty()));
+        // Legacy event for backward compatibility with single-vote lottery. Can be removed in breaking release.
+        if (!$lottery->allow_multiple_votes && !$myVotes->isEmpty()) {
+            $this->events->dispatch(new LotteryWasVoted($actor, $lottery, $myVotes->first(), !$deletedVotes->isEmpty() && !$newOptionIds->isEmpty()));
         }
 
-        $this->events->dispatch(new PollVotesChanged($actor, $poll, $deletedVoteOptions->pluck('option.id'), $newOptionIds));
+        $this->events->dispatch(new LotteryVotesChanged($actor, $lottery, $deletedVoteOptions->pluck('option.id'), $newOptionIds));
 
         try {
             $changedOptionsIds = $currentVoteOptions->concat($deletedVoteOptions)->pluck('id');
             $changedOptions = $options->whereIn('id', $changedOptionsIds);
 
-            $this->pushUpdatedOptions($poll, $changedOptions);
+            $this->pushUpdatedOptions($lottery, $changedOptions);
         } catch (\Exception $e) {
             // We don't want to display an error to the user if the websocket functionality fails.
             $reporters = resolve('container')->tagged(Reporter::class);
@@ -179,7 +179,7 @@ class MultipleVotesPollHandler
             }
         }
 
-        return $poll;
+        return $lottery;
     }
 
     /**
@@ -187,12 +187,12 @@ class MultipleVotesPollHandler
      *
      * @param \Illuminate\Support\Collection $options
      */
-    public function pushUpdatedOptions(Poll $poll, $options)
+    public function pushUpdatedOptions(Lottery $lottery, $options)
     {
         if ($pusher = $this->getPusher()) {
             $pusher->trigger('public', 'updatedPollOptions', [
-                'pollId'          => $poll->id,
-                'pollVoteCount'   => $poll->vote_count,
+                'lotteryId'          => $lottery->id,
+                'lotteryVoteCount'   => $lottery->vote_count,
                 'options'         => $options->pluck('vote_count', 'id')->toArray(),
             ]);
         }

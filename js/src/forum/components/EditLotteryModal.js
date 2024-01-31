@@ -5,24 +5,24 @@ import Stream from 'flarum/common/utils/Stream';
 import extractText from 'flarum/common/utils/extractText';
 import CreateLotteryModal from './CreateLotteryModal';
 
-export default class EditPollModal extends CreateLotteryModal {
+export default class EditLotteryModal extends CreateLotteryModal {
   oninit(vnode) {
     super.oninit(vnode);
 
-    this.poll = this.attrs.poll;
+    this.lottery = this.attrs.lottery;
 
-    this.options = this.poll.options();
+    this.options = this.lottery.options();
     this.optionAnswers = this.options.map((o) => Stream(o.answer()));
     this.optionImageUrls = this.options.map((o) => Stream(o.imageUrl()));
-    this.question = Stream(this.poll.question());
-    this.endDate = Stream(this.formatDate(this.poll.endDate()));
-    this.publicPoll = Stream(this.poll.publicPoll());
-    this.allowMultipleVotes = Stream(this.poll.allowMultipleVotes());
-    this.hideVotes = Stream(this.poll.hideVotes());
-    this.allowChangeVote = Stream(this.poll.allowChangeVote());
-    this.maxVotes = Stream(this.poll.maxVotes() || 0);
+    this.question = Stream(this.lottery.question());
+    this.endDate = Stream(this.formatDate(this.lottery.endDate()));
+    this.publicLottery = Stream(this.lottery.publicLottery());
+    this.allowMultipleVotes = Stream(this.lottery.allowMultipleVotes());
+    this.hideVotes = Stream(this.lottery.hideVotes());
+    this.allowChangeVote = Stream(this.lottery.allowChangeVote());
+    this.maxVotes = Stream(this.lottery.maxVotes() || 0);
 
-    if (this.endDate() && dayjs(this.poll.endDate()).isAfter(dayjs())) {
+    if (this.endDate() && dayjs(this.lottery.endDate()).isAfter(dayjs())) {
       this.datepickerMinDate = this.formatDate(this.endDate());
     }
   }
@@ -34,7 +34,7 @@ export default class EditPollModal extends CreateLotteryModal {
   displayOptions() {
     return this.options.map((opt, i) => (
       <div className="Form-group">
-        <fieldset className="Poll-answer-input">
+        <fieldset className="Lottery-answer-input">
           <input
             className="FormControl"
             type="text"
@@ -42,7 +42,7 @@ export default class EditPollModal extends CreateLotteryModal {
             bidi={this.optionAnswers[i]}
             placeholder={app.translator.trans('nodeloc-lottery.forum.modal.option_placeholder') + ' #' + (i + 1)}
           />
-          {app.forum.attribute('allowPollOptionImage') ? (
+          {app.forum.attribute('allowLotteryOptionImage') ? (
             <input
               className="FormControl"
               type="text"
@@ -56,7 +56,7 @@ export default class EditPollModal extends CreateLotteryModal {
         {i >= 2
           ? Button.component({
               type: 'button',
-              className: 'Button PollModal--button',
+              className: 'Button LotteryModal--button',
               icon: 'fas fa-minus',
               onclick: i >= 2 ? this.removeOption.bind(this, i) : '',
             })
@@ -66,10 +66,10 @@ export default class EditPollModal extends CreateLotteryModal {
   }
 
   addOption() {
-    const max = Math.max(app.forum.attribute('pollMaxOptions'), 2);
+    const max = Math.max(app.forum.attribute('lotteryMaxOptions'), 2);
 
     if (this.options.length < max) {
-      this.options.push(app.store.createRecord('poll_options'));
+      this.options.push(app.store.createRecord('lottery_options'));
       this.optionAnswers.push(Stream(''));
       this.optionImageUrls.push(Stream(''));
     } else {
@@ -96,7 +96,7 @@ export default class EditPollModal extends CreateLotteryModal {
     return {
       question: this.question(),
       endDate: this.dateToTimestamp(this.endDate()),
-      publicPoll: this.publicPoll(),
+      publicLottery: this.publicLottery(),
       hideVotes: this.hideVotes(),
       allowChangeVote: this.allowChangeVote(),
       allowMultipleVotes: this.allowMultipleVotes(),
@@ -112,7 +112,7 @@ export default class EditPollModal extends CreateLotteryModal {
 
     this.loading = true;
 
-    return this.poll
+    return this.lottery
       .save(this.data())
       .then(() => {
         this.hide();

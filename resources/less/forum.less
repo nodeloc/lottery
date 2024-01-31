@@ -1,12 +1,12 @@
 :root {
-  --poll-option-color: var(--muted-color);
-  --poll-option-active-color: var(--secondary-color);
+  --lottery-option-color: var(--muted-color);
+  --lottery-option-active-color: var(--secondary-color);
 }
 
-.ComposerBody-poll {
+.ComposerBody-lottery {
   margin-right: 15px;
 
-  .PollLabel {
+  .LotteryLabel {
     font-size: 85%;
     font-weight: 600;
     display: inline-block;
@@ -25,7 +25,7 @@
   }
 }
 
-.PollDiscussionModal {
+.LotteryDiscussionModal {
   .Form-group {
     margin-top: 5px;
 
@@ -45,7 +45,7 @@
     }
   }
 
-  .PollModal--answers {
+  .LotteryModal--answers {
     margin-bottom: 20px;
 
     .Form-group {
@@ -59,7 +59,7 @@
     }
   }
 
-  .PollModal--button {
+  .LotteryModal--button {
     flex-shrink: 1;
     margin-left: 10px;
     text-align: right;
@@ -77,7 +77,7 @@
     }
   }
 
-  .PollModal--date {
+  .LotteryModal--date {
     display: flex;
 
     input {
@@ -90,11 +90,11 @@
     }
   }
 
-  .PollModal-SubmitButton {
+  .LotteryModal-SubmitButton {
     margin-top: 10px;
   }
 
-  .PollModal-Button {
+  .LotteryModal-Button {
     margin-bottom: 15px;
   }
 
@@ -107,12 +107,12 @@
   }
 }
 
-.Post-poll {
+.Post-lottery {
   .Post--hidden & {
     opacity: 0.5;
   }
 
-  .PollOptions {
+  .LotteryOptions {
     display: grid;
     grid: auto-flow / repeat(auto-fit, minmax(~"min(250px, 100%)", 1fr));
     column-gap: 30px;
@@ -120,7 +120,7 @@
     margin-left: 15px;
     align-items: start;
 
-    .PollAnswer when (@fof-polls-options-color-blend = true) {
+    .LotteryAnswer when (@nodeloc-lottery-options-color-blend = true) {
       &-checkbox, &-text {
         & when (@config-dark-mode =true) {
           mix-blend-mode: difference;
@@ -133,7 +133,7 @@
     }
   }
 
-  .Poll-sticky {
+  .Lottery-sticky {
     position: sticky;
     bottom: 0;
     padding: 10px 0;
@@ -149,7 +149,7 @@
       display: none;
     }
 
-    .PollInfoText {
+    .LotteryInfoText {
       flex-grow: 1;
       margin-bottom: 0;
     }
@@ -159,7 +159,7 @@
     margin-top: 2em;
   }
 
-  .PollHeading {
+  .LotteryHeading {
     display: flex;
     align-items: baseline;
     gap: 10px;
@@ -183,8 +183,8 @@
   }
 }
 
-.PollOption {
-  &, .PollBar {
+.LotteryOption {
+  &, .LotteryBar {
     border-radius: 4px;
   }
 
@@ -193,7 +193,7 @@
   }
 
   /* Percent */
-  .PollPercent {
+  .LotteryPercent {
     padding-right: 5px;
     font-size: 11px;
     font-weight: 600;
@@ -203,7 +203,7 @@
     }
   }
 
-  .PollLabel {
+  .LotteryLabel {
     font-size: 85%;
     font-weight: 600;
     display: inline-block;
@@ -215,16 +215,16 @@
   }
 
   &:not(.Post--hidden &) {
-    .PollBar::after {
-      animation: slideInPollBackground 1s ease-in-out;
+    .LotteryBar::after {
+      animation: slideInLotteryBackground 1s ease-in-out;
       transition: background-size 0.75s ease-in-out;
     }
   }
 
-  .PollBar {
+  .LotteryBar {
     padding: 10px;
     position: relative;
-    border: 2px solid var(--poll-option-color);
+    border: 2px solid var(--lottery-option-color);
     overflow: hidden;
     isolation: isolate;
 
@@ -234,16 +234,16 @@
     gap: 10px;
     align-items: flex-start;
 
-    .PollAnswer-checkbox {
+    .LotteryAnswer-checkbox {
       grid-column: 1;
       grid-row: 1;
 
-      + .PollAnswer-text {
+      + .LotteryAnswer-text {
         grid-column: 2;
       }
     }
 
-    .PollAnswer-text {
+    .LotteryAnswer-text {
       grid-column: ~"1 / span 2";
       grid-row: 1;
 
@@ -256,7 +256,7 @@
       }
     }
 
-    .PollAnswer-image {
+    .LotteryAnswer-image {
       grid-column: ~"1 / span 2";
       grid-row: 2;
       max-width: 100%;
@@ -271,23 +271,23 @@
       z-index: -1;
       background-image: linear-gradient(
         to right,
-        var(--poll-option-color) 0% 100%
+        var(--lottery-option-color) 0% 100%
       );
-      background-size: var(--poll-option-width) 100%;
+      background-size: var(--lottery-option-width) 100%;
       background-repeat: no-repeat;
       content: '';
     }
 
-    .PollAnswer {
+    .LotteryAnswer {
       flex-grow: 1;
     }
 
     &[data-selected] {
-      --poll-option-color: var(--poll-option-active-color);
+      --lottery-option-color: var(--lottery-option-active-color);
     }
   }
 
-  .PollAnswer-checkbox {
+  .LotteryAnswer-checkbox {
     margin-bottom: 0;
     position: relative;
     z-index: 2;
@@ -371,12 +371,12 @@
   }
 }
 
-.PublicPollButton {
+.PublicLotteryButton {
   display: block;
   margin: 20px 15px;
 }
 
-.PollInfoText {
+.LotteryInfoText {
   span {
     display: block;
   }
@@ -386,11 +386,11 @@
   }
 }
 
-@keyframes slideInPollBackground {
+@keyframes slideInLotteryBackground {
   from {
     background-size: 0 100%;
   }
   to {
-    background-size: var(--poll-option-width) 100%;
+    background-size: var(--lottery-option-width) 100%;
   }
 }

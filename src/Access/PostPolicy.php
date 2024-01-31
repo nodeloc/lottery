@@ -1,15 +1,15 @@
 <?php
 
 /*
- * This file is part of fof/polls.
+ * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace FoF\Polls\Access;
+namespace Nodeloc\Lottery\Access;
 
 use Flarum\Post\Post;
 use Flarum\User\Access\AbstractPolicy;
@@ -25,10 +25,10 @@ class PostPolicy extends AbstractPolicy
             return $this->deny();
         }
 
-        // Only allow polls to be started if the user can start polls in the discussion
+        // Only allow lottery to be started if the user can start lottery in the discussion
         // and if the user can either edit the post or is currently creating a new post.
         // For example, actors cannot 'edit' a post they're currently creating if post editing is allowed until next reply.
-        if ($actor->can('polls.start', $post->discussion) && (!$post->exists || $actor->can('edit', $post))) {
+        if ($actor->can('lottery.start', $post->discussion) && (!$post->exists || $actor->can('edit', $post))) {
             return $this->allow();
         }
     }

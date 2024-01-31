@@ -1,37 +1,37 @@
 <?php
 
 /*
- * This file is part of fof/polls.
+ * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace FoF\Polls\Console;
+namespace Nodeloc\Lottery\Console;
 
-use FoF\Polls\Poll;
-use FoF\Polls\PollOption;
+use Nodeloc\Lottery\Lottery;
+use Nodeloc\Lottery\LotteryOption;
 use Illuminate\Console\Command;
 
 class RefreshVoteCountCommand extends Command
 {
-    protected $signature = 'fof:polls:refresh';
+    protected $signature = 'nodeloc:lottery:refresh';
 
     protected $description = 'Re-calculate the total number of votes per option';
 
     public function handle()
     {
-        $progress = $this->output->createProgressBar(Poll::query()->count() + PollOption::query()->count());
+        $progress = $this->output->createProgressBar(Lottery::query()->count() + LotteryOption::query()->count());
 
-        Poll::query()->each(function (Poll $poll) use ($progress) {
-            $poll->refreshVoteCount()->save();
+        Lottery::query()->each(function (Lottery $lottery) use ($progress) {
+            $lottery->refreshVoteCount()->save();
 
             $progress->advance();
         });
 
-        PollOption::query()->each(function (PollOption $option) use ($progress) {
+        LotteryOption::query()->each(function (LotteryOption $option) use ($progress) {
             $option->refreshVoteCount()->save();
 
             $progress->advance();

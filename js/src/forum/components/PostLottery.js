@@ -8,15 +8,15 @@ import classList from 'flarum/common/utils/classList';
 import ItemList from 'flarum/common/utils/ItemList';
 import Tooltip from 'flarum/common/components/Tooltip';
 import icon from 'flarum/common/helpers/icon';
-import EditPollModal from './EditPollModal';
+import EditLotteryModal from './EditLotteryModal';
 
-export default class PostPoll extends Component {
+export default class PostLottery extends Component {
   oninit(vnode) {
     super.oninit(vnode);
 
     this.loadingOptions = false;
 
-    this.useSubmitUI = !this.attrs.poll?.canChangeVote() && this.attrs.poll?.allowMultipleVotes();
+    this.useSubmitUI = !this.attrs.lottery?.canChangeVote() && this.attrs.lottery?.allowMultipleVotes();
     this.pendingSubmit = false;
     this.pendingOptions = null;
   }
@@ -35,46 +35,46 @@ export default class PostPoll extends Component {
   }
 
   view() {
-    const poll = this.attrs.poll;
-    const options = poll.options() || [];
-    let maxVotes = poll.allowMultipleVotes() ? poll.maxVotes() : 1;
+    const lottery = this.attrs.lottery;
+    const options = lottery.options() || [];
+    let maxVotes = lottery.allowMultipleVotes() ? lottery.maxVotes() : 1;
 
     if (maxVotes === 0) maxVotes = options.length;
 
     const infoItems = this.infoItems(maxVotes);
 
     return (
-      <div className="Post-poll" data-id={poll.id()}>
-        <div className="PollHeading">
-          <h3 className="PollHeading-title">{poll.question()}</h3>
+      <div className="Post-lottery" data-id={lottery.id()}>
+        <div className="LotteryHeading">
+          <h3 className="LotteryHeading-title">{lottery.question()}</h3>
 
-          {poll.canSeeVoters() && (
-            <Tooltip text={app.translator.trans('nodeloc-lottery.forum.public_poll')}>
-              <Button className="Button PollHeading-voters" onclick={this.showVoters.bind(this)} icon="fas fa-poll" />
+          {lottery.canSeeVoters() && (
+            <Tooltip text={app.translator.trans('nodeloc-lottery.forum.public_lottery')}>
+              <Button className="Button LotteryHeading-voters" onclick={this.showVoters.bind(this)} icon="fas fa-lottery" />
             </Tooltip>
           )}
 
-          {poll.canEdit() && (
+          {lottery.canEdit() && (
             <Tooltip text={app.translator.trans('nodeloc-lottery.forum.moderation.edit')}>
-              <Button className="Button PollHeading-edit" onclick={app.modal.show.bind(app.modal, EditPollModal, { poll })} icon="fas fa-pen" />
+              <Button className="Button LotteryHeading-edit" onclick={app.modal.show.bind(app.modal, EditLotteryModal, { lottery })} icon="fas fa-pen" />
             </Tooltip>
           )}
-          {poll.canDelete() && (
+          {lottery.canDelete() && (
             <Tooltip text={app.translator.trans('nodeloc-lottery.forum.moderation.delete')}>
-              <Button className="Button PollHeading-delete" onclick={this.deletePoll.bind(this)} icon="fas fa-trash" />
+              <Button className="Button LotteryHeading-delete" onclick={this.deleteLottery.bind(this)} icon="fas fa-trash" />
             </Tooltip>
           )}
         </div>
 
         <div>
-          <div className="PollOptions">{options.map(this.viewOption.bind(this))}</div>
+          <div className="LotteryOptions">{options.map(this.viewOption.bind(this))}</div>
 
-          <div className="Poll-sticky">
-            {!infoItems.isEmpty() && <div className="helpText PollInfoText">{infoItems.toArray()}</div>}
+          <div className="Lottery-sticky">
+            {!infoItems.isEmpty() && <div className="helpText LotteryInfoText">{infoItems.toArray()}</div>}
 
             {this.useSubmitUI && this.pendingSubmit && (
-              <Button className="Button Button--primary Poll-submit" loading={this.loadingOptions} onclick={this.onsubmit.bind(this)}>
-                {app.translator.trans('nodeloc-lottery.forum.poll.submit_button')}
+              <Button className="Button Button--primary Lottery-submit" loading={this.loadingOptions} onclick={this.onsubmit.bind(this)}>
+                {app.translator.trans('nodeloc-lottery.forum.lottery.submit_button')}
               </Button>
             )}
           </div>
@@ -85,10 +85,10 @@ export default class PostPoll extends Component {
 
   infoItems(maxVotes) {
     const items = new ItemList();
-    const poll = this.attrs.poll;
-    const hasVoted = poll.myVotes()?.length > 0;
+    const lottery = this.attrs.lottery;
+    const hasVoted = lottery.myVotes()?.length > 0;
 
-    if (app.session.user && !poll.canVote() && !poll.hasEnded()) {
+    if (app.session.user && !lottery.canVote() && !lottery.hasEnded()) {
       items.add(
         'no-permission',
         <span>
@@ -98,33 +98,33 @@ export default class PostPoll extends Component {
       );
     }
 
-    if (poll.endDate()) {
+    if (lottery.endDate()) {
       items.add(
         'end-date',
         <span>
           <i class="icon fas fa-clock fa-fw" />
-          {poll.hasEnded()
-            ? app.translator.trans('nodeloc-lottery.forum.poll_ended')
-            : app.translator.trans('nodeloc-lottery.forum.days_remaining', { time: dayjs(poll.endDate()).fromNow() })}
+          {lottery.hasEnded()
+            ? app.translator.trans('nodeloc-lottery.forum.lottery_ended')
+            : app.translator.trans('nodeloc-lottery.forum.days_remaining', { time: dayjs(lottery.endDate()).fromNow() })}
         </span>
       );
     }
 
-    if (poll.canVote()) {
+    if (lottery.canVote()) {
       items.add(
         'max-votes',
         <span>
-          <i className="icon fas fa-poll fa-fw" />
+          <i className="icon fas fa-lottery fa-fw" />
           {app.translator.trans('nodeloc-lottery.forum.max_votes_allowed', { max: maxVotes })}
         </span>
       );
 
-      if (!poll.canChangeVote()) {
+      if (!lottery.canChangeVote()) {
         items.add(
           'cannot-change-vote',
           <span>
             <i className={`icon fas fa-${hasVoted ? 'times' : 'exclamation'}-circle fa-fw`} />
-            {app.translator.trans('nodeloc-lottery.forum.poll.cannot_change_vote')}
+            {app.translator.trans('nodeloc-lottery.forum.lottery.cannot_change_vote')}
           </span>
         );
       }
@@ -134,43 +134,43 @@ export default class PostPoll extends Component {
   }
 
   viewOption(opt) {
-    const poll = this.attrs.poll;
-    const hasVoted = poll.myVotes()?.length > 0;
-    const totalVotes = poll.voteCount();
+    const lottery = this.attrs.lottery;
+    const hasVoted = lottery.myVotes()?.length > 0;
+    const totalVotes = lottery.voteCount();
 
-    const voted = this.pendingOptions ? this.pendingOptions.has(opt.id()) : poll.myVotes()?.some?.((vote) => vote.option() === opt);
+    const voted = this.pendingOptions ? this.pendingOptions.has(opt.id()) : lottery.myVotes()?.some?.((vote) => vote.option() === opt);
     const votes = opt.voteCount();
     const percent = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
 
     // isNaN(null) is false, so we have to check type directly now that API always returns the field
     const canSeeVoteCount = typeof votes === 'number';
-    const isDisabled = this.loadingOptions || (hasVoted && !poll.canChangeVote());
-    const width = canSeeVoteCount ? percent : (Number(voted) / (poll.myVotes()?.length || 1)) * 100;
+    const isDisabled = this.loadingOptions || (hasVoted && !lottery.canChangeVote());
+    const width = canSeeVoteCount ? percent : (Number(voted) / (lottery.myVotes()?.length || 1)) * 100;
 
-    const showCheckmark = !app.session.user || (!poll.hasEnded() && poll.canVote() && (!hasVoted || poll.canChangeVote()));
+    const showCheckmark = !app.session.user || (!lottery.hasEnded() && lottery.canVote() && (!hasVoted || lottery.canChangeVote()));
 
     const bar = (
-      <div className="PollBar" data-selected={!!voted} style={`--poll-option-width: ${width}%`}>
+      <div className="LotteryBar" data-selected={!!voted} style={`--lottery-option-width: ${width}%`}>
         {showCheckmark && (
-          <label className="PollAnswer-checkbox checkbox">
+          <label className="LotteryAnswer-checkbox checkbox">
             <input onchange={this.changeVote.bind(this, opt)} type="checkbox" checked={voted} disabled={isDisabled} />
             <span className="checkmark" />
           </label>
         )}
 
-        <div className="PollAnswer-text">
-          <span className="PollAnswer-text-answer">{opt.answer()}</span>
-          {voted && !showCheckmark && icon('fas fa-check-circle', { className: 'PollAnswer-check' })}
-          {canSeeVoteCount && <span className={classList('PollPercent', percent !== 100 && 'PollPercent--option')}>{percent}%</span>}
+        <div className="LotteryAnswer-text">
+          <span className="LotteryAnswer-text-answer">{opt.answer()}</span>
+          {voted && !showCheckmark && icon('fas fa-check-circle', { className: 'LotteryAnswer-check' })}
+          {canSeeVoteCount && <span className={classList('LotteryPercent', percent !== 100 && 'LotteryPercent--option')}>{percent}%</span>}
         </div>
 
-        {opt.imageUrl() ? <img className="PollAnswer-image" src={opt.imageUrl()} alt={opt.answer()} /> : null}
+        {opt.imageUrl() ? <img className="LotteryAnswer-image" src={opt.imageUrl()} alt={opt.answer()} /> : null}
       </div>
     );
 
     return (
       <div
-        className={classList('PollOption', hasVoted && 'PollVoted', poll.hasEnded() && 'PollEnded', opt.imageUrl() && 'LotteryOption-hasImage')}
+        className={classList('LotteryOption', hasVoted && 'LotteryVoted', lottery.hasEnded() && 'LotteryEnded', opt.imageUrl() && 'LotteryOption-hasImage')}
         data-id={opt.id()}
       >
         {canSeeVoteCount ? (
@@ -191,9 +191,9 @@ export default class PostPoll extends Component {
       return;
     }
 
-    const optionIds = this.pendingOptions || new Set(this.attrs.poll.myVotes().map?.((v) => v.option().id()));
+    const optionIds = this.pendingOptions || new Set(this.attrs.lottery.myVotes().map?.((v) => v.option().id()));
     const isUnvoting = optionIds.delete(option.id());
-    const allowsMultiple = this.attrs.poll.allowMultipleVotes();
+    const allowsMultiple = this.attrs.lottery.allowMultipleVotes();
 
     if (!allowsMultiple) {
       optionIds.clear();
@@ -226,7 +226,7 @@ export default class PostPoll extends Component {
     return app
       .request({
         method: 'PATCH',
-        url: `${app.forum.attribute('apiUrl')}/nodeloc/lottery/${this.attrs.poll.id()}/votes`,
+        url: `${app.forum.attribute('apiUrl')}/nodeloc/lottery/${this.attrs.lottery.id()}/votes`,
         body: {
           data: {
             optionIds: Array.from(optionIds),
@@ -250,14 +250,14 @@ export default class PostPoll extends Component {
   showVoters() {
     // Load all the votes only when opening the votes list
     app.modal.show(ListVotersModal, {
-      poll: this.attrs.poll,
+      lottery: this.attrs.lottery,
       post: this.attrs.post,
     });
   }
 
-  deletePoll() {
+  deleteLottery() {
     if (confirm(app.translator.trans('nodeloc-lottery.forum.moderation.delete_confirm'))) {
-      this.attrs.poll.delete().then(() => {
+      this.attrs.lottery.delete().then(() => {
         m.redraw.sync();
       });
     }

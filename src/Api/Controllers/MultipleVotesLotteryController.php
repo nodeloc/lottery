@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,23 +13,23 @@ namespace Nodeloc\Lottery\Api\Controllers;
 
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Http\RequestUtil;
-use Nodeloc\Lottery\Api\Serializers\PollSerializer;
-use Nodeloc\Lottery\Commands\MultipleVotesPoll;
+use Nodeloc\Lottery\Api\Serializers\LotterySerializer;
+use Nodeloc\Lottery\Commands\MultipleVotesLottery;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
 /**
- * This class also works for single-vote polls.
+ * This class also works for single-vote lottery.
  * The existing API endpoint only allows for one vote per user, so we need to create a new one.
  */
-class MultipleVotesPollController extends AbstractShowController
+class MultipleVotesLotteryController extends AbstractShowController
 {
     /**
      * @var string
      */
-    public $serializer = PollSerializer::class;
+    public $serializer = LotterySerializer::class;
 
     public $include = ['options', 'myVotes', 'myVotes.option'];
 
@@ -59,7 +59,7 @@ class MultipleVotesPollController extends AbstractShowController
     protected function data(ServerRequestInterface $request, Document $document)
     {
         return $this->bus->dispatch(
-            new MultipleVotesPoll(
+            new MultipleVotesLottery(
                 RequestUtil::getActor($request),
                 Arr::get($request->getQueryParams(), 'id'),
                 Arr::get($request->getParsedBody(), 'data', [])

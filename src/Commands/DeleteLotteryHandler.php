@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,26 +11,26 @@
 
 namespace Nodeloc\Lottery\Commands;
 
-use Nodeloc\Lottery\PollRepository;
+use Nodeloc\Lottery\LotteryRepository;
 
-class DeletePollHandler
+class DeleteLotteryHandler
 {
     /**
-     * @var PollRepository
+     * @var LotteryRepository
      */
-    protected $polls;
+    protected $lottery;
 
-    public function __construct(PollRepository $polls)
+    public function __construct(LotteryRepository $lottery)
     {
-        $this->polls = $polls;
+        $this->lottery = $lottery;
     }
 
-    public function handle(DeletePoll $command)
+    public function handle(DeleteLottery $command)
     {
-        $poll = $this->polls->findOrFail($command->pollId, $command->actor);
+        $lottery = $this->lottery->findOrFail($command->lotteryId, $command->actor);
 
-        $command->actor->assertCan('delete', $poll);
+        $command->actor->assertCan('delete', $lottery);
 
-        $poll->delete();
+        $lottery->delete();
     }
 }

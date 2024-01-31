@@ -9,10 +9,10 @@ export default () => {
   extend(CommentPost.prototype, 'content', function (content) {
     const post = this.attrs.post;
 
-    if ((!post.isHidden() || this.revealContent) && post.polls()) {
-      for (const poll of post.polls()) {
-        if (poll) {
-          content.push(<PostLottery post={post} poll={poll} />);
+    if ((!post.isHidden() || this.revealContent) && post.lottery()) {
+      for (const lottery of post.lottery()) {
+        if (lottery) {
+          content.push(<PostLottery post={post} lottery={lottery} />);
         }
       }
     }
@@ -20,14 +20,14 @@ export default () => {
 
   extend(CommentPost.prototype, 'oninit', function () {
     this.subtree.check(() => {
-      const polls = this.attrs.post.polls();
+      const lottery = this.attrs.post.lottery();
 
-      const checks = polls?.map?.(
-        (poll) =>
-          poll && [
-            poll.data?.attributes,
-            poll.options().map?.((option) => option?.data?.attributes),
-            poll.myVotes().map?.((vote) => vote.option()?.id()),
+      const checks = lottery?.map?.(
+        (lottery) =>
+          lottery && [
+            lottery.data?.attributes,
+            lottery.options().map?.((option) => option?.data?.attributes),
+            lottery.myVotes().map?.((vote) => vote.option()?.id()),
           ]
       );
 
@@ -38,14 +38,14 @@ export default () => {
   extend(DiscussionPage.prototype, 'oncreate', function () {
     if (app.pusher) {
       app.pusher.then((binding) => {
-        // We will listen for updates to all polls and options
+        // We will listen for updates to all lottery and options
         // Even if that model is not in the current discussion, it doesn't really matter
-        binding.channels.main.bind('updatedPollOptions', (data) => {
-          const poll = app.store.getById('polls', data['pollId']);
+        binding.channels.main.bind('updatedLotteryOptions', (data) => {
+          const lottery = app.store.getById('lottery', data['lotteryId']);
 
-          if (poll) {
-            poll.pushAttributes({
-              voteCount: data['pollVoteCount'],
+          if (lottery) {
+            lottery.pushAttributes({
+              voteCount: data['lotteryVoteCount'],
             });
 
             // Not redrawing here, as the option below should trigger the redraw already
@@ -54,7 +54,7 @@ export default () => {
           const changedOptions = data['options'];
 
           for (const optionId in changedOptions) {
-            const option = app.store.getById('poll_options', optionId);
+            const option = app.store.getById('lottery_options', optionId);
 
             if (option && option.voteCount() !== undefined) {
               option.pushAttributes({
@@ -72,7 +72,7 @@ export default () => {
   extend(DiscussionPage.prototype, 'onremove', function () {
     if (app.pusher) {
       app.pusher.then((binding) => {
-        binding.channels.main.unbind('updatedPollOptions');
+        binding.channels.main.unbind('updatedLotteryOptions');
       });
     }
   });

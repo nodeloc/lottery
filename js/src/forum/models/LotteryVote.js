@@ -1,14 +1,14 @@
 import Model from 'flarum/common/Model';
 
-export default class PollVote extends Model {
-  poll = Model.hasOne('poll');
+export default class LotteryVote extends Model {
+  lottery = Model.hasOne('lottery');
   option = Model.hasOne('option');
   user = Model.hasOne('user');
 
-  pollId = Model.attribute('pollId');
+  lotteryId = Model.attribute('lotteryId');
   optionId = Model.attribute('optionId');
 
   apiEndpoint() {
-    return `/nodeloc/lottery/${this.pollId()}/vote`;
+    return `/nodeloc/lottery/${this.lotteryId()}/vote`;
   }
 }

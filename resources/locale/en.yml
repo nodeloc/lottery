@@ -1,40 +1,40 @@
-fof-polls:
+nodeloc-lottery:
   admin:
     settings:
-      allow_option_image: Allow an image URL to be provided for each poll option
-      max_options: Maximum number of options per poll
-      options_color_blend: Color blend text in poll options
-      options_color_blend_help: Use this to use color mixing to make the poll options more readable. Disable if this feature causes issues with your forum's appearance, reducing readability.
+      allow_option_image: Allow an image URL to be provided for each lottery option
+      max_options: Maximum number of options per lottery
+      options_color_blend: Color blend text in lottery options
+      options_color_blend_help: Use this to use color mixing to make the lottery options more readable. Disable if this feature causes issues with your forum's appearance, reducing readability.
     permissions:
       view_results_without_voting: View results without voting
-      start: Start a poll
-      self_edit: Edit created polls (requires post edit permission)
-      self_post_edit: Edit *all* polls on own posts (requires post edit permission)
-      vote: Vote on polls
+      start: Start a lottery
+      self_edit: Edit created lotterys (requires post edit permission)
+      self_post_edit: Edit *all* lotterys on own posts (requires post edit permission)
+      vote: Vote on lotterys
       change_vote: Change vote
-      moderate: Edit & remove polls
+      moderate: Edit & remove lotterys
 
   forum:
-    days_remaining: Poll ends {time}.
+    days_remaining: lottery ends {time}.
     no_permission: You don't have permission to vote
-    poll_ended: This poll has ended.
-    public_poll: View voters
-    max_votes_allowed: "Poll allows voting for {max, plural, one {# option} other {# options}}."
+    lottery_ended: This lottery has ended.
+    public_lottery: View voters
+    max_votes_allowed: "lottery allows voting for {max, plural, one {# option} other {# options}}."
 
-    poll:
+    lottery:
       cannot_change_vote: You cannot change your vote after voting.
       submit_button: Vote
 
     composer_discussion:
-      add_poll: => fof-polls.forum.moderation.add
-      edit_poll: => fof-polls.forum.moderation.edit
-      no_permission_alert: You do not have permission to start a poll.
+      add_lottery: => nodeloc-lottery.forum.moderation.add
+      edit_lottery: => nodeloc-lottery.forum.moderation.edit
+      no_permission_alert: You do not have permission to start a lottery.
 
     modal:
-      add_title: Add a Poll
+      add_title: Add a lottery
       add_option_label: Add an Option
-      date_placeholder: Poll end date (Optional)
-      edit_title: Edit Poll
+      date_placeholder: Draw Time
+      edit_title: Edit lottery
       include_question: You must include a question
       max: You can have a maximum of {max} answers
       min: You must include a minimum of 2 answers
@@ -42,23 +42,23 @@ fof-polls:
       option_placeholder: Answer
       image_option_placeholder: Image URL (optional)
       options_label: Answers
-      public_poll_label: Allow people to see who voted
+      public_lottery_label: Allow people to see who voted
       allow_multiple_votes_label: Allow people to vote for multiple options
       max_votes_label: Max votes per user
       max_votes_help: Set to 0 to allow users to vote for all options.
-      hide_votes_label: Hide votes until poll ends
+      hide_votes_label: Hide votes until lottery ends
       allow_change_vote_label: Allow users to change their vote
-      question_placeholder: Question
+      lottery_placeholder: Prizes
       submit: Submit
 
     moderation:
-      add: Add Poll
-      delete: Remove Poll
-      delete_confirm: Are you sure you want to delete this poll?
-      edit: Edit Poll
+      add: Add lottery
+      delete: Remove lottery
+      delete_confirm: Are you sure you want to delete this lottery?
+      edit: Edit lottery
 
     tooltip:
-      badge: Poll
+      badge: lottery
       votes: "{count, plural, one {# vote} other {# votes}}"
 
     votes_modal:

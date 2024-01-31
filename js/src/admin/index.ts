@@ -1,30 +1,31 @@
+// @ts-ignore
 import app from 'flarum/admin/app';
 
-app.initializers.add('fof/polls', () => {
+app.initializers.add('nodeloc/lottery', () => {
   app.extensionData
-    .for('fof-polls')
+    .for('nodeloc-lottery')
     .registerSetting({
-      setting: 'fof-polls.allowOptionImage',
+      setting: 'nodeloc-lottery.allowOptionImage',
       type: 'switch',
-      label: app.translator.trans('fof-polls.admin.settings.allow_option_image'),
+      label: app.translator.trans('nodeloc-lottery.admin.settings.allow_option_image'),
     })
     .registerSetting({
-      setting: 'fof-polls.optionsColorBlend',
+      setting: 'nodeloc-lottery.optionsColorBlend',
       type: 'switch',
-      label: app.translator.trans('fof-polls.admin.settings.options_color_blend'),
-      help: app.translator.trans('fof-polls.admin.settings.options_color_blend_help'),
+      label: app.translator.trans('nodeloc-lottery.admin.settings.options_color_blend'),
+      help: app.translator.trans('nodeloc-lottery.admin.settings.options_color_blend_help'),
     })
     .registerSetting({
-      setting: 'fof-polls.maxOptions',
+      setting: 'nodeloc-lottery.maxOptions',
       type: 'number',
-      label: app.translator.trans('fof-polls.admin.settings.max_options'),
+      label: app.translator.trans('nodeloc-lottery.admin.settings.max_options'),
       min: 2,
     })
     .registerPermission(
       {
         icon: 'fas fa-signal',
-        label: app.translator.trans('fof-polls.admin.permissions.view_results_without_voting'),
-        permission: 'discussion.polls.viewResultsWithoutVoting',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.view_results_without_voting'),
+        permission: 'discussion.lottery.viewResultsWithoutVoting',
         allowGuest: true,
       },
       'view'
@@ -32,48 +33,48 @@ app.initializers.add('fof/polls', () => {
     .registerPermission(
       {
         icon: 'fas fa-signal',
-        label: app.translator.trans('fof-polls.admin.permissions.start'),
-        permission: 'discussion.polls.start',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.start'),
+        permission: 'discussion.lottery.start',
       },
       'start'
     )
     .registerPermission(
       {
         icon: 'fas fa-pencil-alt',
-        label: app.translator.trans('fof-polls.admin.permissions.self_edit'),
-        permission: 'polls.selfEdit',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.self_edit'),
+        permission: 'lottery.selfEdit',
       },
       'start'
     )
     .registerPermission(
       {
         icon: 'fas fa-pencil-alt',
-        label: app.translator.trans('fof-polls.admin.permissions.self_post_edit'),
-        permission: 'polls.selfPostEdit',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.self_post_edit'),
+        permission: 'lottery.selfPostEdit',
       },
       'start'
     )
     .registerPermission(
       {
         icon: 'fas fa-signal',
-        label: app.translator.trans('fof-polls.admin.permissions.vote'),
-        permission: 'discussion.polls.vote',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.vote'),
+        permission: 'discussion.lottery.vote',
       },
       'reply'
     )
     .registerPermission(
       {
         icon: 'fas fa-signal',
-        label: app.translator.trans('fof-polls.admin.permissions.change_vote'),
-        permission: 'polls.changeVote',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.change_vote'),
+        permission: 'lottery.changeVote',
       },
       'reply'
     )
     .registerPermission(
       {
         icon: 'fas fa-pencil-alt',
-        label: app.translator.trans('fof-polls.admin.permissions.moderate'),
-        permission: 'discussion.polls.moderate',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.moderate'),
+        permission: 'discussion.lottery.moderate',
       },
       'moderate'
     );

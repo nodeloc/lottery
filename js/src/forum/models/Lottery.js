@@ -1,11 +1,11 @@
 import Model from 'flarum/common/Model';
 
-export default class Poll extends Model {
+export default class Lottery extends Model {
   question = Model.attribute('question');
   hasEnded = Model.attribute('hasEnded');
   endDate = Model.attribute('endDate');
 
-  publicPoll = Model.attribute('publicPoll');
+  publicLottery = Model.attribute('publicLottery');
   hideVotes = Model.attribute('hideVotes');
   allowChangeVote = Model.attribute('allowChangeVote');
   allowMultipleVotes = Model.attribute('allowMultipleVotes');
@@ -24,6 +24,6 @@ export default class Poll extends Model {
   myVotes = Model.hasMany('myVotes');
 
   apiEndpoint() {
-    return `/fof/polls${this.exists ? `/${this.data.id}` : ''}`;
+    return `/nodeloc/lottery${this.exists ? `/${this.data.id}` : ''}`;
   }
 }

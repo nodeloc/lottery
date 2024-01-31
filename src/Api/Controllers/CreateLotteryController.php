@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,15 +15,15 @@ use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Bus\Dispatcher;
 use Flarum\Http\RequestUtil;
 use Flarum\Post\PostRepository;
-use Nodeloc\Lottery\Api\Serializers\PollSerializer;
-use Nodeloc\Lottery\Commands\CreatePoll;
+use Nodeloc\Lottery\Api\Serializers\LotterySerializer;
+use Nodeloc\Lottery\Commands\CreateLottery;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class CreatePollController extends AbstractCreateController
+class CreateLotteryController extends AbstractCreateController
 {
-    public $serializer = PollSerializer::class;
+    public $serializer = LotterySerializer::class;
 
     public $include = ['options'];
 
@@ -48,7 +48,7 @@ class CreatePollController extends AbstractCreateController
         $postId = Arr::get($request->getParsedBody(), 'data.relationships.post.data.id');
 
         return $this->bus->dispatch(
-            new CreatePoll(
+            new CreateLottery(
                 RequestUtil::getActor($request),
                 $this->posts->findOrFail($postId),
                 Arr::get($request->getParsedBody(), 'data.attributes')

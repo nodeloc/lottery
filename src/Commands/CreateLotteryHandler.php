@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,19 +14,19 @@ namespace Nodeloc\Lottery\Commands;
 use Carbon\Carbon;
 use Flarum\Post\PostRepository;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Nodeloc\Lottery\Events\PollWasCreated;
-use Nodeloc\Lottery\Events\SavingPollAttributes;
-use Nodeloc\Lottery\Poll;
-use Nodeloc\Lottery\PollOption;
+use Nodeloc\Lottery\Events\LotteryWasCreated;
+use Nodeloc\Lottery\Events\SavingLotteryAttributes;
+use Nodeloc\Lottery\Lottery;
+use Nodeloc\Lottery\LotteryOption;
 use Nodeloc\Lottery\Validators\LotteryOptionValidator;
-use Nodeloc\Lottery\Validators\PollValidator;
+use Nodeloc\Lottery\Validators\LotteryValidator;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
 
-class CreatePollHandler
+class CreateLotteryHandler
 {
     /**
-     * @var PollValidator
+     * @var LotteryValidator
      */
     protected $validator;
 
@@ -50,7 +50,7 @@ class CreatePollHandler
      */
     protected $posts;
 
-    public function __construct(PostRepository $posts, PollValidator $validator, LotteryOptionValidator $optionValidator, Dispatcher $events, SettingsRepositoryInterface $settings)
+    public function __construct(PostRepository $posts, LotteryValidator $validator, LotteryOptionValidator $optionValidator, Dispatcher $events, SettingsRepositoryInterface $settings)
     {
         $this->validator = $validator;
         $this->optionValidator = $optionValidator;
@@ -59,7 +59,7 @@ class CreatePollHandler
         $this->posts = $posts;
     }
 
-    public function handle(CreatePoll $command)
+    public function handle(CreateLottery $command)
     {
         $command->actor->assertCan('startPoll', $command->post);
 
@@ -67,7 +67,7 @@ class CreatePollHandler
 
         // Ideally we would use some JSON:API relationship syntax, but it's just too complicated with Flarum to generate the correct JSON payload
         // Instead we just pass an array of option objects that are each a set of key-value pairs for the option attributes
-        // This is also the same syntax that always used by EditPollHandler
+        // This is also the same syntax that always used by EditLotteryHandler
         $rawOptionsData = Arr::get($attributes, 'options');
         $optionsData = [];
 
@@ -96,7 +96,7 @@ class CreatePollHandler
                 $carbonDate = null;
             }
 
-            $poll = Poll::build(
+            $lottery = Lottery::build(
                 Arr::get($attributes, 'question'),
                 $command->post->id,
                 $command->actor->id,
@@ -108,11 +108,11 @@ class CreatePollHandler
                 Arr::get($attributes, 'allowChangeVote'),
             );
 
-            $this->events->dispatch(new SavingPollAttributes($command->actor, $poll, $attributes, $attributes));
+            $this->events->dispatch(new SavingLotteryAttributes($command->actor, $lottery, $attributes, $attributes));
 
-            $poll->save();
+            $lottery->save();
 
-            $this->events->dispatch(new PollWasCreated($command->actor, $poll));
+            $this->events->dispatch(new LotteryWasCreated($command->actor, $lottery));
 
             foreach ($optionsData as $optionData) {
                 $imageUrl = Arr::get($optionData, 'imageUrl');
@@ -121,12 +121,12 @@ class CreatePollHandler
                     $imageUrl = null;
                 }
 
-                $option = PollOption::build(Arr::get($optionData, 'answer'), $imageUrl);
+                $option = LotteryOption::build(Arr::get($optionData, 'answer'), $imageUrl);
 
-                $poll->options()->save($option);
+                $lottery->options()->save($option);
             }
 
-            return $poll;
+            return $lottery;
         });
     }
 }

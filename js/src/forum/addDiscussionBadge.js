@@ -7,17 +7,17 @@ import Discussion from 'flarum/common/models/Discussion';
 
 export default () => {
   extend(DiscussionList.prototype, 'requestParams', (params) => {
-    params.include.push('poll');
+    params.include.push('lottery');
   });
 
   extend(Discussion.prototype, 'badges', function (badges) {
-    if (this.hasPoll()) {
+    if (this.hasLottery()) {
       badges.add(
-        'poll',
+        'lottery',
         Badge.component({
-          type: 'poll',
-          label: app.translator.trans('fof-polls.forum.tooltip.badge'),
-          icon: 'fas fa-signal',
+          type: 'lottery',
+          label: app.translator.trans('nodeloc-lottery.forum.tooltip.badge'),
+          icon: 'fas fa-gift',
         }),
         5
       );

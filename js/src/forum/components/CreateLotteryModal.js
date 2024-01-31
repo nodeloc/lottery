@@ -7,7 +7,7 @@ import ItemList from 'flarum/common/utils/ItemList';
 import Stream from 'flarum/common/utils/Stream';
 import extractText from 'flarum/common/utils/extractText';
 
-export default class CreatePollModal extends Modal {
+export default class CreateLotteryModal extends Modal {
   oninit(vnode) {
     super.oninit(vnode);
 
@@ -18,7 +18,7 @@ export default class CreatePollModal extends Modal {
 
     this.endDate = Stream();
 
-    this.publicPoll = Stream(false);
+    this.publicLottery = Stream(false);
     this.hideVotes = Stream(false);
     this.allowChangeVote = Stream(true);
     this.allowMultipleVotes = Stream(false);
@@ -26,29 +26,29 @@ export default class CreatePollModal extends Modal {
 
     this.datepickerMinDate = this.formatDate(undefined);
 
-    const { poll } = this.attrs;
+    const { lottery } = this.attrs;
 
-    // When re-opening the modal for the same discussion composer where we already set poll attributes
-    if (poll && Array.isArray(poll.options)) {
+    // When re-opening the modal for the same discussion composer where we already set lottery attributes
+    if (lottery && Array.isArray(lottery.options)) {
       this.options = [];
       this.optionImageUrls = [];
-      poll.options.forEach((option) => {
+      lottery.options.forEach((option) => {
         this.options.push(Stream(option.answer));
         this.optionImageUrls.push(Stream(option.imageUrl));
       });
 
-      this.question(poll.question);
-      this.publicPoll(poll.publicPoll);
-      this.hideVotes(poll.hideVotes);
-      this.allowChangeVote(poll.allowChangeVote);
-      this.allowMultipleVotes(poll.allowMultipleVotes);
-      this.maxVotes(poll.maxVotes || 0);
+      this.question(lottery.question);
+      this.publicLottery(lottery.publicLottery);
+      this.hideVotes(lottery.hideVotes);
+      this.allowChangeVote(lottery.allowChangeVote);
+      this.allowMultipleVotes(lottery.allowMultipleVotes);
+      this.maxVotes(lottery.maxVotes || 0);
 
-      this.endDate(this.formatDate(poll.endDate));
+      this.endDate(this.formatDate(lottery.endDate));
 
-      // Replace minimum of 'today' for poll end date only if the poll is not already closed
-      if (this.endDate() && dayjs(poll.endDate).isAfter(dayjs())) {
-        this.datepickerMinDate = this.formatDate(poll.endDate);
+      // Replace minimum of 'today' for lottery end date only if the lottery is not already closed
+      if (this.endDate() && dayjs(lottery.endDate).isAfter(dayjs())) {
+        this.datepickerMinDate = this.formatDate(lottery.endDate);
       }
     }
   }
@@ -58,13 +58,13 @@ export default class CreatePollModal extends Modal {
   }
 
   className() {
-    return 'PollDiscussionModal Modal--medium';
+    return 'LotteryDiscussionModal Modal--medium';
   }
 
   content() {
     return [
       <div className="Modal-body">
-        <div className="PollDiscussionModal-form">{this.fields().toArray()}</div>
+        <div className="LotteryDiscussionModal-form">{this.fields().toArray()}</div>
       </div>,
     ];
   }
@@ -75,7 +75,7 @@ export default class CreatePollModal extends Modal {
     items.add(
       'question',
       <div className="Form-group">
-        <label className="label">{app.translator.trans('nodeloc-lottery.forum.modal.question_placeholder')}</label>
+        <label className="label">{app.translator.trans('nodeloc-lottery.forum.modal.lottery_placeholder')}</label>
 
         <input type="text" name="question" className="FormControl" bidi={this.question} />
       </div>,
@@ -84,12 +84,12 @@ export default class CreatePollModal extends Modal {
 
     items.add(
       'answers',
-      <div className="PollModal--answers Form-group">
-        <label className="label PollModal--answers-title">
+      <div className="LotteryModal--answers Form-group">
+        <label className="label LotteryModal--answers-title">
           <span>{app.translator.trans('nodeloc-lottery.forum.modal.options_label')}</span>
 
           {Button.component({
-            className: 'Button PollModal--button small',
+            className: 'Button LotteryModal--button small',
             icon: 'fas fa-plus',
             onclick: this.addOption.bind(this),
           })}
@@ -105,7 +105,7 @@ export default class CreatePollModal extends Modal {
       <div className="Form-group">
         <label className="label">{app.translator.trans('nodeloc-lottery.forum.modal.date_placeholder')}</label>
 
-        <div className="PollModal--date">
+        <div className="LotteryModal--date">
           <input
             className="FormControl"
             type="datetime-local"
@@ -115,7 +115,7 @@ export default class CreatePollModal extends Modal {
             max={this.formatDate('2038')}
           />
           {Button.component({
-            className: 'Button PollModal--button',
+            className: 'Button LotteryModal--button',
             icon: 'fas fa-times',
             onclick: this.endDate.bind(this, null),
           })}
@@ -126,7 +126,7 @@ export default class CreatePollModal extends Modal {
             <i class="icon fas fa-clock" />
             &nbsp;
             {dayjs(this.endDate()).isBefore(dayjs())
-              ? app.translator.trans('nodeloc-lottery.forum.poll_ended')
+              ? app.translator.trans('nodeloc-lottery.forum.lottery_ended')
               : app.translator.trans('nodeloc-lottery.forum.days_remaining', { time: dayjs(this.endDate()).fromNow() })}
           </p>
         )}
@@ -139,10 +139,10 @@ export default class CreatePollModal extends Modal {
       <div className="Form-group">
         {Switch.component(
           {
-            state: this.publicPoll() || false,
-            onchange: this.publicPoll,
+            state: this.publicLottery() || false,
+            onchange: this.publicLottery,
           },
-          app.translator.trans('nodeloc-lottery.forum.modal.public_poll_label')
+          app.translator.trans('nodeloc-lottery.forum.modal.public_lottery_label')
         )}
       </div>,
       20
@@ -202,7 +202,7 @@ export default class CreatePollModal extends Modal {
         {Button.component(
           {
             type: 'submit',
-            className: 'Button Button--primary PollModal-SubmitButton',
+            className: 'Button Button--primary LotteryModal-SubmitButton',
             loading: this.loading,
           },
           app.translator.trans('nodeloc-lottery.forum.modal.submit')
@@ -217,7 +217,7 @@ export default class CreatePollModal extends Modal {
   displayOptions() {
     return Object.keys(this.options).map((el, i) => (
       <div className="Form-group">
-        <fieldset className="Poll-answer-input">
+        <fieldset className="Lottery-answer-input">
           <input
             className="FormControl"
             type="text"
@@ -225,7 +225,7 @@ export default class CreatePollModal extends Modal {
             bidi={this.options[i]}
             placeholder={app.translator.trans('nodeloc-lottery.forum.modal.option_placeholder') + ' #' + (i + 1)}
           />
-          {app.forum.attribute('allowPollOptionImage') ? (
+          {app.forum.attribute('allowLotteryOptionImage') ? (
             <input
               className="FormControl"
               type="text"
@@ -238,7 +238,7 @@ export default class CreatePollModal extends Modal {
         {i >= 2
           ? Button.component({
               type: 'button',
-              className: 'Button Button--warning PollModal--button',
+              className: 'Button Button--warning LotteryModal--button',
               icon: 'fas fa-minus',
               onclick: i >= 2 ? this.removeOption.bind(this, i) : '',
             })
@@ -248,7 +248,7 @@ export default class CreatePollModal extends Modal {
   }
 
   addOption() {
-    const max = Math.max(app.forum.attribute('pollMaxOptions'), 2);
+    const max = Math.max(app.forum.attribute('lotteryMaxOptions'), 2);
 
     if (this.options.length < max) {
       this.options.push(Stream(''));
@@ -264,10 +264,10 @@ export default class CreatePollModal extends Modal {
   }
 
   data() {
-    const poll = {
+    const lottery = {
       question: this.question(),
       endDate: this.dateToTimestamp(this.endDate()),
-      publicPoll: this.publicPoll(),
+      publicLottery: this.publicLottery(),
       hideVotes: this.hideVotes(),
       allowChangeVote: this.allowChangeVote(),
       allowMultipleVotes: this.allowMultipleVotes(),
@@ -277,7 +277,7 @@ export default class CreatePollModal extends Modal {
 
     this.options.forEach((answer, index) => {
       if (answer()) {
-        poll.options.push({
+        lottery.options.push({
           answer: answer(),
           imageUrl: this.optionImageUrls[index](),
         });
@@ -290,13 +290,13 @@ export default class CreatePollModal extends Modal {
       return null;
     }
 
-    if (poll.options.length < 2) {
+    if (lottery.options.length < 2) {
       alert(app.translator.trans('nodeloc-lottery.forum.modal.min'));
 
       return null;
     }
 
-    return poll;
+    return lottery;
   }
 
   onsubmit(e) {

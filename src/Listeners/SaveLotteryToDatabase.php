@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,21 +13,21 @@ namespace Nodeloc\Lottery\Listeners;
 
 use Flarum\Foundation\ValidationException;
 use Flarum\Post\Event\Saving;
-use Nodeloc\Lottery\Commands\CreatePoll;
-use Nodeloc\Lottery\Validators\PollOptionValidator;
-use Nodeloc\Lottery\Validators\PollValidator;
+use Nodeloc\Lottery\Commands\CreateLottery;
+use Nodeloc\Lottery\Validators\LotteryOptionValidator;
+use Nodeloc\Lottery\Validators\LotteryValidator;
 use Illuminate\Contracts\Events\Dispatcher;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class SavePollsToDatabase
+class SaveLotteryToDatabase
 {
     /**
-     * @var PollValidator
+     * @var LotteryValidator
      */
     protected $validator;
 
     /**
-     * @var PollOptionValidator
+     * @var LotteryOptionValidator
      */
     protected $optionValidator;
 
@@ -41,7 +41,7 @@ class SavePollsToDatabase
      */
     protected $bus;
 
-    public function __construct(PollValidator $validator, PollOptionValidator $optionValidator, Dispatcher $events, \Flarum\Bus\Dispatcher $bus)
+    public function __construct(LotteryValidator $validator, LotteryOptionValidator $optionValidator, Dispatcher $events, \Flarum\Bus\Dispatcher $bus)
     {
         $this->validator = $validator;
         $this->optionValidator = $optionValidator;
@@ -51,7 +51,7 @@ class SavePollsToDatabase
 
     public function handle(Saving $event)
     {
-        if ($event->post->exists || !isset($event->data['attributes']['poll'])) {
+        if ($event->post->exists || !isset($event->data['attributes']['lottery'])) {
             return;
         }
 
@@ -61,14 +61,14 @@ class SavePollsToDatabase
             $translator = resolve(TranslatorInterface::class);
 
             throw new ValidationException([
-                'poll' => $translator->trans('nodeloc-lottery.forum.composer_discussion.no_permission_alert'),
+                'lottery' => $translator->trans('nodeloc-lottery.forum.composer_discussion.no_permission_alert'),
             ]);
         }
 
-        $attributes = (array) $event->data['attributes']['poll'];
+        $attributes = (array) $event->data['attributes']['lottery'];
 
         $this->bus->dispatch(
-            new CreatePoll(
+            new CreateLottery(
                 $event->actor,
                 $event->post,
                 $attributes,

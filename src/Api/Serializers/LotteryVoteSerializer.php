@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,37 +13,37 @@ namespace Nodeloc\Lottery\Api\Serializers;
 
 use Flarum\Api\Serializer\AbstractSerializer;
 use Flarum\Api\Serializer\BasicUserSerializer;
-use Nodeloc\Lottery\PollVote;
+use Nodeloc\Lottery\LotteryVote;
 
-class PollVoteSerializer extends AbstractSerializer
+class LotteryVoteSerializer extends AbstractSerializer
 {
     /**
      * @var string
      */
-    protected $type = 'poll_votes';
+    protected $type = 'lottery_votes';
 
     /**
      * Get the default set of serialized attributes for a model.
      *
-     * @param PollVote $vote
+     * @param LotteryVote $vote
      *
      * @return array
      */
     protected function getDefaultAttributes($vote)
     {
         return [
-            'pollId'    => $vote->poll_id,
+            'lotteryId'    => $vote->lottery_id,
             'optionId'  => $vote->option_id,
             'createdAt' => $this->formatDate($vote->created_at),
             'updatedAt' => $this->formatDate($vote->updated_at),
         ];
     }
 
-    public function poll($model)
+    public function lottery($model)
     {
         return $this->hasOne(
             $model,
-            PollSerializer::class
+            LotterySerializer::class
         );
     }
 
@@ -51,7 +51,7 @@ class PollVoteSerializer extends AbstractSerializer
     {
         return $this->hasOne(
             $model,
-            PollOptionSerializer::class
+            LotteryOptionSerializer::class
         );
     }
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,70 +13,70 @@ namespace Nodeloc\Lottery\Access;
 
 use Flarum\User\Access\AbstractPolicy;
 use Flarum\User\User;
-use Nodeloc\Lottery\Poll;
+use Nodeloc\Lottery\Lottery;
 
-class PollPolicy extends AbstractPolicy
+class LotteryPolicy extends AbstractPolicy
 {
-    public function seeVoteCount(User $actor, Poll $poll)
+    public function seeVoteCount(User $actor, Lottery $lottery)
     {
-        if ($poll->hide_votes && $poll->end_date && !$poll->hasEnded()) {
+        if ($lottery->hide_votes && $lottery->end_date && !$lottery->hasEnded()) {
             return $this->deny();
         }
 
-        if ($poll->myVotes($actor)->count() || $actor->can('polls.viewResultsWithoutVoting', $poll->post->discussion)) {
+        if ($lottery->myVotes($actor)->count() || $actor->can('lottery.viewResultsWithoutVoting', $lottery->post->discussion)) {
             return $this->allow();
         }
     }
 
-    public function seeVoters(User $actor, Poll $poll)
+    public function seeVoters(User $actor, Lottery $lottery)
     {
-        if (!$actor->can('seeVoteCount', $poll)) {
+        if (!$actor->can('seeVoteCount', $lottery)) {
             return $this->deny();
         }
 
-        if ($poll->public_poll) {
+        if ($lottery->public_lottery) {
             return $this->allow();
         }
     }
 
-    public function view(User $actor, Poll $poll)
+    public function view(User $actor, Lottery $lottery)
     {
-        if ($actor->can('view', $poll->post)) {
+        if ($actor->can('view', $lottery->post)) {
             return $this->allow();
         }
     }
 
-    public function vote(User $actor, Poll $poll)
+    public function vote(User $actor, Lottery $lottery)
     {
-        if ($actor->can('polls.vote', $poll->post->discussion) && !$poll->hasEnded()) {
+        if ($actor->can('lottery.vote', $lottery->post->discussion) && !$lottery->hasEnded()) {
             return $this->allow();
         }
     }
 
-    public function changeVote(User $actor, Poll $poll)
+    public function changeVote(User $actor, Lottery $lottery)
     {
-        if ($poll->allow_change_vote && $actor->hasPermission('polls.changeVote')) {
+        if ($lottery->allow_change_vote && $actor->hasPermission('lottery.changeVote')) {
             return $this->allow();
         }
     }
 
-    public function edit(User $actor, Poll $poll)
+    public function edit(User $actor, Lottery $lottery)
     {
-        if ($actor->can('polls.moderate', $poll->post->discussion)) {
+        if ($actor->can('lottery.moderate', $lottery->post->discussion)) {
             return $this->allow();
         }
 
-        if (!$poll->hasEnded() && $actor->can('edit', $poll->post)) {
-            // User either created poll & can edit own poll or can edit all polls in post
-            if (($actor->id === $poll->user_id && $actor->hasPermission('polls.selfEdit'))
-                || ($actor->id == $poll->post->user_id && $actor->hasPermission('polls.selfPostEdit'))) {
+        if (!$lottery->hasEnded() && $actor->can('edit', $lottery->post)) {
+            // User either created lottery & can edit own lottery or can edit all lottery in post
+            if (($actor->id === $lottery->user_id && $actor->hasPermission('lottery.selfEdit'))
+                || ($actor->id == $lottery->post->user_id && $actor->hasPermission('lottery.selfPostEdit'))) {
                 return $this->allow();
             }
         }
     }
 
-    public function delete(User $actor, Poll $poll)
+    public function delete(User $actor, Lottery $lottery)
     {
-        return $this->edit($actor, $poll);
+        return $this->edit($actor, $lottery);
     }
 }

@@ -6,11 +6,11 @@ import CreateLotteryModal from './components/CreateLotteryModal';
 import Button from 'flarum/common/components/Button';
 
 export default () => {
-  const createPoll = (post) =>
+  const createLottery = (post) =>
     app.modal.show(CreateLotteryModal, {
       onsubmit: (data) =>
         app.store
-          .createRecord('polls')
+          .createRecord('lottery')
           .save(
             {
               ...data,
@@ -24,17 +24,17 @@ export default () => {
               },
             }
           )
-          .then((poll) => {
-            post.rawRelationship('polls')?.push?.({ type: 'polls', id: poll.id() });
-            return poll;
+          .then((lottery) => {
+            post.rawRelationship('lottery')?.push?.({ type: 'lottery', id: lottery.id() });
+            return lottery;
           }),
     });
 
   extend(PostControls, 'moderationControls', function (items, post) {
-    if (!post.isHidden() && post.canStartPoll()) {
+    if (!post.isHidden() && post.canStartLottery()) {
       items.add(
-        'addPoll',
-        <Button icon="fas fa-poll" onclick={createPoll.bind(this, post)}>
+        'addLottery',
+        <Button icon="fas fa-lottery" onclick={createLottery.bind(this, post)}>
           {app.translator.trans('nodeloc-lottery.forum.moderation.add')}
         </Button>
       );

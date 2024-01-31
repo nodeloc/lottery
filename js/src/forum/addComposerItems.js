@@ -5,27 +5,26 @@ import classList from 'flarum/common/utils/classList';
 import DiscussionComposer from 'flarum/forum/components/DiscussionComposer';
 import ReplyComposer from 'flarum/forum/components/ReplyComposer';
 
-import CreatePollModal from './components/CreatePollModal';
+import CreateLotteryModal from './components/CreateLotteryModal';
 
 export const addToComposer = (composer) => {
-  composer.prototype.addPoll = function () {
-    app.modal.show(CreatePollModal, {
-      poll: this.composer.fields.poll,
-      onsubmit: (poll) => (this.composer.fields.poll = poll),
+  composer.prototype.addLottery = function () {
+    app.modal.show(CreateLotteryModal, {
+      lottery: this.composer.fields.lottery,
+      onsubmit: (lottery) => (this.composer.fields.lottery = lottery),
     });
   };
 
   // Add button to DiscussionComposer header
   extend(composer.prototype, 'headerItems', function (items) {
     const discussion = this.composer.body?.attrs?.discussion;
-    const canStartPoll = discussion?.canStartPoll() ?? app.forum.canStartPolls();
-
-    if (canStartPoll) {
+    const canStartLottery = discussion?.canStartLottery() ?? app.forum.canStartLottery();
+    if (canStartLottery) {
       items.add(
-        'polls',
-        <a className="ComposerBody-poll" onclick={this.addPoll.bind(this)}>
-          <span className={classList('PollLabel', !this.composer.fields.poll && 'none')}>
-            {app.translator.trans(`fof-polls.forum.composer_discussion.${this.composer.fields.poll ? 'edit' : 'add'}_poll`)}
+        'lottery',
+        <a className="ComposerBody-lottery" onclick={this.addLottery.bind(this)}>
+          <span className={classList('LotteryLabel', !this.composer.fields.lottery && 'none')}>
+            {app.translator.trans(`nodeloc-lottery.forum.composer_discussion.${this.composer.fields.lottery ? 'edit' : 'add'}_lottery`)}
           </span>
         </a>,
         1
@@ -34,8 +33,8 @@ export const addToComposer = (composer) => {
   });
 
   extend(composer.prototype, 'data', function (data) {
-    if (this.composer.fields.poll) {
-      data.poll = this.composer.fields.poll;
+    if (this.composer.fields.lottery) {
+      data.lottery = this.composer.fields.lottery;
     }
   });
 };

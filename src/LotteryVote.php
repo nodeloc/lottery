@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,16 +15,16 @@ use Flarum\Database\AbstractModel;
 use Flarum\User\User;
 
 /**
- * @property Lottery           $poll
- * @property PollOption     $option
+ * @property Lottery           $lottery
+ * @property LotteryOption     $option
  * @property User           $user
- * @property int            $poll_id
+ * @property int            $lottery_id
  * @property int            $option_id
  * @property int            $user_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class PollVote extends AbstractModel
+class LotteryVote extends AbstractModel
 {
     /**
      * {@inheritdoc}
@@ -42,31 +42,31 @@ class PollVote extends AbstractModel
     protected $fillable = ['user_id', 'option_id'];
 
     /**
-     * @param $pollId
+     * @param $lotteryId
      * @param $userId
      * @param $optionId
      *
      * @return static
      */
-    public static function build($pollId, $userId, $optionId)
+    public static function build($lotteryId, $userId, $optionId)
     {
         $vote = new static();
 
-        $vote->poll_id = $pollId;
+        $vote->lottery_id = $lotteryId;
         $vote->user_id = $userId;
         $vote->option_id = $optionId;
 
         return $vote;
     }
 
-    public function poll()
+    public function lottery()
     {
         return $this->belongsTo(Lottery::class);
     }
 
     public function option()
     {
-        return $this->belongsTo(PollOption::class);
+        return $this->belongsTo(LotteryOption::class);
     }
 
     public function user()

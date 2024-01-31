@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,14 +15,14 @@ use Flarum\Post\Post;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Builder;
 
-class ScopePollVisibility
+class ScopeLotteryVisibility
 {
     public function __invoke(User $actor, Builder $query)
     {
         $query->whereExists(function ($query) use ($actor) {
             $query->selectRaw('1')
                  ->from('posts')
-                 ->whereColumn('posts.id', 'polls.post_id');
+                 ->whereColumn('posts.id', 'lottery.post_id');
             Post::query()->setQuery($query)->whereVisibleTo($actor);
         });
     }

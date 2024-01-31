@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@ namespace Nodeloc\Lottery\Commands;
 
 use Flarum\User\User;
 
-class DeletePoll
+class DeleteLottery
 {
     /**
      * @var User
@@ -23,15 +23,15 @@ class DeletePoll
     /**
      * @var int
      */
-    public $pollId;
+    public $lotteryId;
 
     /**
      * @param User $actor
-     * @param int  $pollId
+     * @param int  $lotteryId
      */
-    public function __construct(User $actor, int $pollId)
+    public function __construct(User $actor, int $lotteryId)
     {
         $this->actor = $actor;
-        $this->pollId = $pollId;
+        $this->lotteryId = $lotteryId;
     }
 }

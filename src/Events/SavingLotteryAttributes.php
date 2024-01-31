@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,18 +12,18 @@
 namespace Nodeloc\Lottery\Events;
 
 use Flarum\User\User;
-use Nodeloc\Lottery\Poll;
+use Nodeloc\Lottery\Lottery;
 
 /**
- * Dispatched while a poll is being saved
- * This event is triggered in both SaveLotteryToDatabase and EditPollHandler, which don't have the same data format!
+ * Dispatched while a lottery is being saved
+ * This event is triggered in both SaveLotteryToDatabase and EditLotteryHandler, which don't have the same data format!
  * For this reason the "attributes" part of the JSON:API payload is provided as a separate attribute since it's almost identical for both situations.
  *
  * The create/edit authorization has already been performed when this event is dispatched, so it doesn't need to be checked again
  *
- * You should not throw any exception if the poll doesn't exist because this happens after the post has already been created and would break email and other extensions
+ * You should not throw any exception if the lottery doesn't exist because this happens after the post has already been created and would break email and other extensions
  */
-class SavingPollAttributes
+class SavingLotteryAttributes
 {
     /**
      * @var User
@@ -31,9 +31,9 @@ class SavingPollAttributes
     public $actor;
 
     /**
-     * @var Poll
+     * @var Lottery
      */
-    public $poll;
+    public $lottery;
 
     /**
      * @var array
@@ -47,14 +47,14 @@ class SavingPollAttributes
 
     /**
      * @param User  $actor
-     * @param Poll  $poll
+     * @param Lottery  $lottery
      * @param array $attributes
      * @param array $data
      */
-    public function __construct(User $actor, Poll $poll, array $attributes, array $data)
+    public function __construct(User $actor, Lottery $lottery, array $attributes, array $data)
     {
         $this->actor = $actor;
-        $this->poll = $poll;
+        $this->lottery = $lottery;
         $this->attributes = $attributes;
         $this->data = $data;
     }

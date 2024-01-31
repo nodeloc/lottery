@@ -3,7 +3,7 @@
 /*
  * This file is part of nodeloc/lottery.
  *
- * Copyright (c) FriendsOfFlarum.
+ * Copyright (c) Nodeloc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,18 +13,18 @@ namespace Nodeloc\Lottery\Commands;
 
 use Carbon\Carbon;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Nodeloc\Lottery\Events\SavingPollAttributes;
-use Nodeloc\Lottery\PollRepository;
+use Nodeloc\Lottery\Events\SavingLotteryAttributes;
+use Nodeloc\Lottery\LotteryRepository;
 use Nodeloc\Lottery\Validators\LotteryOptionValidator;
-use Nodeloc\Lottery\Validators\PollValidator;
+use Nodeloc\Lottery\Validators\LotteryValidator;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-class EditPollHandler
+class EditLotteryHandler
 {
     /**
-     * @var PollValidator
+     * @var LotteryValidator
      */
     protected $validator;
 
@@ -44,24 +44,24 @@ class EditPollHandler
     protected $settings;
 
     /**
-     * @var PollRepository
+     * @var LotteryRepository
      */
-    protected $polls;
+    protected $lottery;
 
-    public function __construct(PollRepository $polls, PollValidator $validator, LotteryOptionValidator $optionValidator, Dispatcher $events, SettingsRepositoryInterface $settings)
+    public function __construct(LotteryRepository $lottery, LotteryValidator $validator, LotteryOptionValidator $optionValidator, Dispatcher $events, SettingsRepositoryInterface $settings)
     {
         $this->validator = $validator;
         $this->optionValidator = $optionValidator;
         $this->events = $events;
         $this->settings = $settings;
-        $this->polls = $polls;
+        $this->lottery = $lottery;
     }
 
-    public function handle(EditPoll $command)
+    public function handle(EditLottery $command)
     {
-        $poll = $this->polls->findOrFail($command->pollId, $command->actor);
+        $lottery = $this->lottery->findOrFail($command->lotteryId, $command->actor);
 
-        $command->actor->assertCan('edit', $poll);
+        $command->actor->assertCan('edit', $lottery);
 
         $attributes = (array) Arr::get($command->data, 'attributes');
         $options = collect(Arr::get($attributes, 'options', []));
@@ -69,18 +69,18 @@ class EditPollHandler
         $this->validator->assertValid($attributes);
 
         if (isset($attributes['question'])) {
-            $poll->question = $attributes['question'];
+            $lottery->question = $attributes['question'];
         }
 
         foreach (['publicPoll', 'allowMultipleVotes', 'hideVotes', 'allowChangeVote'] as $key) {
             if (isset($attributes[$key])) {
-                $poll->settings[Str::snake($key)] = (bool) $attributes[$key];
+                $lottery->settings[Str::snake($key)] = (bool) $attributes[$key];
             }
         }
 
         if (isset($attributes['maxVotes'])) {
             $maxVotes = (int) $attributes['maxVotes'];
-            $poll->settings['max_votes'] = min(max($maxVotes, 0), $options->count());
+            $lottery->settings['max_votes'] = min(max($maxVotes, 0), $options->count());
         }
 
         if (isset($attributes['endDate'])) {
@@ -89,23 +89,23 @@ class EditPollHandler
             if (is_string($endDate)) {
                 $date = Carbon::parse($endDate);
 
-                if (!$poll->hasEnded() && $date->isFuture() && ($poll->end_date === null || $poll->end_date->lessThanOrEqualTo($date))) {
-                    $poll->end_date = $date->utc();
+                if (!$lottery->hasEnded() && $date->isFuture() && ($lottery->end_date === null || $lottery->end_date->lessThanOrEqualTo($date))) {
+                    $lottery->end_date = $date->utc();
                 }
             } elseif (is_bool($endDate) && !$endDate) {
-                $poll->end_date = null;
+                $lottery->end_date = null;
             }
         }
 
-        $this->events->dispatch(new SavingPollAttributes($command->actor, $poll, $attributes, $command->data));
+        $this->events->dispatch(new SavingLotteryAttributes($command->actor, $lottery, $attributes, $command->data));
 
-        $poll->save();
+        $lottery->save();
 
         // remove options not passed if 2 or more are
         if ($options->isNotEmpty() && $options->count() >= 2) {
             $ids = $options->pluck('id')->whereNotNull()->toArray();
 
-            $poll->options()->whereNotIn('id', $ids)->delete();
+            $lottery->options()->whereNotIn('id', $ids)->delete();
         }
 
         // update + add new options
@@ -123,7 +123,7 @@ class EditPollHandler
 
             $this->optionValidator->assertValid($optionAttributes);
 
-            $poll->options()->updateOrCreate([
+            $lottery->options()->updateOrCreate([
                 'id' => $id,
             ], [
                 'answer'    => Arr::get($optionAttributes, 'answer'),
@@ -131,6 +131,6 @@ class EditPollHandler
             ]);
         }
 
-        return $poll;
+        return $lottery;
     }
 }
