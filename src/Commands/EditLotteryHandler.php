@@ -19,7 +19,6 @@ use Nodeloc\Lottery\Validators\LotteryOptionValidator;
 use Nodeloc\Lottery\Validators\LotteryValidator;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 class EditLotteryHandler
 {
@@ -68,19 +67,21 @@ class EditLotteryHandler
 
         $this->validator->assertValid($attributes);
 
-        if (isset($attributes['question'])) {
-            $lottery->question = $attributes['question'];
+        if (isset($attributes['prizes'])) {
+            $lottery->prizes = $attributes['prizes'];
         }
 
-        foreach (['publicPoll', 'allowMultipleVotes', 'hideVotes', 'allowChangeVote'] as $key) {
-            if (isset($attributes[$key])) {
-                $lottery->settings[Str::snake($key)] = (bool) $attributes[$key];
-            }
+        if (isset($attributes['price'])) {
+            $lottery->price = $attributes['price'];
         }
-
-        if (isset($attributes['maxVotes'])) {
-            $maxVotes = (int) $attributes['maxVotes'];
-            $lottery->settings['max_votes'] = min(max($maxVotes, 0), $options->count());
+        if (isset($attributes['amount'])) {
+            $lottery->amount = $attributes['amount'];
+        }
+        if (isset($attributes['min_participants'])) {
+            $lottery->min_participants = $attributes['min_participants'];
+        }
+        if (isset($attributes['max_participants'])) {
+            $lottery->max_participants = $attributes['max_participants'];
         }
 
         if (isset($attributes['endDate'])) {
@@ -104,7 +105,6 @@ class EditLotteryHandler
         // remove options not passed if 2 or more are
         if ($options->isNotEmpty() && $options->count() >= 2) {
             $ids = $options->pluck('id')->whereNotNull()->toArray();
-
             $lottery->options()->whereNotIn('id', $ids)->delete();
         }
 
@@ -113,21 +113,19 @@ class EditLotteryHandler
             $id = Arr::get($opt, 'id');
 
             $optionAttributes = [
-                'answer'   => Arr::get($opt, 'attributes.answer'),
-                'imageUrl' => Arr::get($opt, 'attributes.imageUrl') ?: null,
+                'operator_type'   => Arr::get($opt, 'attributes.operator_type'),
+                'operator' => Arr::get($opt, 'attributes.operator'),
+                'operator_value' => Arr::get($opt, 'attributes.operator_value'),
             ];
-
-            if (!$this->settings->get('nodeloc-lottery.allowOptionImage')) {
-                unset($optionAttributes['imageUrl']);
-            }
 
             $this->optionValidator->assertValid($optionAttributes);
 
             $lottery->options()->updateOrCreate([
                 'id' => $id,
             ], [
-                'answer'    => Arr::get($optionAttributes, 'answer'),
-                'image_url' => Arr::get($optionAttributes, 'imageUrl'),
+                'operator_type'    => Arr::get($optionAttributes, 'operator_type'),
+                'operator' => Arr::get($optionAttributes, 'operator'),
+                'operator_value' => Arr::get($optionAttributes, 'operator_value'),
             ]);
         }
 

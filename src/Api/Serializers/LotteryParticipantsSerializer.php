@@ -13,29 +13,28 @@ namespace Nodeloc\Lottery\Api\Serializers;
 
 use Flarum\Api\Serializer\AbstractSerializer;
 use Flarum\Api\Serializer\BasicUserSerializer;
-use Nodeloc\Lottery\LotteryVote;
+use Nodeloc\Lottery\LotteryParticipants;
 
-class LotteryVoteSerializer extends AbstractSerializer
+class LotteryParticipantsSerializer extends AbstractSerializer
 {
     /**
      * @var string
      */
-    protected $type = 'lottery_votes';
+    protected $type = 'lottery_participants';
 
     /**
      * Get the default set of serialized attributes for a model.
      *
-     * @param LotteryVote $vote
+     * @param LotteryParticipants $participants
      *
      * @return array
      */
-    protected function getDefaultAttributes($vote)
+    protected function getDefaultAttributes($participants)
     {
         return [
-            'lotteryId'    => $vote->lottery_id,
-            'optionId'  => $vote->option_id,
-            'createdAt' => $this->formatDate($vote->created_at),
-            'updatedAt' => $this->formatDate($vote->updated_at),
+            'lotteryId'    => $participants->lottery_id,
+            'createdAt' => $this->formatDate($participants->created_at),
+            'updatedAt' => $this->formatDate($participants->updated_at),
         ];
     }
 
@@ -44,14 +43,6 @@ class LotteryVoteSerializer extends AbstractSerializer
         return $this->hasOne(
             $model,
             LotterySerializer::class
-        );
-    }
-
-    public function option($model)
-    {
-        return $this->hasOne(
-            $model,
-            LotteryOptionSerializer::class
         );
     }
 

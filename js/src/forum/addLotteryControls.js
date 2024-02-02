@@ -20,7 +20,7 @@ export default () => {
             },
             {
               data: {
-                include: 'options,myVotes,myVotes.option',
+                include: 'options,lottery_participants,lottery_participants.option',
               },
             }
           )

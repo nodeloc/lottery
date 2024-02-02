@@ -19,13 +19,13 @@ app.initializers.add('nodeloc/lottery', () => {
       setting: 'nodeloc-lottery.maxOptions',
       type: 'number',
       label: app.translator.trans('nodeloc-lottery.admin.settings.max_options'),
-      min: 2,
+      min: 1,
     })
     .registerPermission(
       {
         icon: 'fas fa-signal',
-        label: app.translator.trans('nodeloc-lottery.admin.permissions.view_results_without_voting'),
-        permission: 'discussion.lottery.viewResultsWithoutVoting',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.view_results_without_Enter'),
+        permission: 'discussion.lottery.viewResultsWithoutEnter',
         allowGuest: true,
       },
       'view'
@@ -57,16 +57,16 @@ app.initializers.add('nodeloc/lottery', () => {
     .registerPermission(
       {
         icon: 'fas fa-signal',
-        label: app.translator.trans('nodeloc-lottery.admin.permissions.vote'),
-        permission: 'discussion.lottery.vote',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.enter'),
+        permission: 'discussion.lottery.enter',
       },
       'reply'
     )
     .registerPermission(
       {
         icon: 'fas fa-signal',
-        label: app.translator.trans('nodeloc-lottery.admin.permissions.change_vote'),
-        permission: 'lottery.changeVote',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.canCancelEnter'),
+        permission: 'lottery.cancelEnter',
       },
       'reply'
     )

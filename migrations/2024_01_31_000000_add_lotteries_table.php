@@ -12,7 +12,7 @@
 use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-return Migration::createTable('lottery', function (Blueprint $table) {
+return Migration::createTable('lotteries', function (Blueprint $table) {
     $table->increments('id');
 
     $table->string('question');

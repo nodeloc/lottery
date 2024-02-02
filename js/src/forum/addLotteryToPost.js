@@ -18,23 +18,6 @@ export default () => {
     }
   });
 
-  extend(CommentPost.prototype, 'oninit', function () {
-    this.subtree.check(() => {
-      const lottery = this.attrs.post.lottery();
-
-      const checks = lottery?.map?.(
-        (lottery) =>
-          lottery && [
-            lottery.data?.attributes,
-            lottery.options().map?.((option) => option?.data?.attributes),
-            lottery.myVotes().map?.((vote) => vote.option()?.id()),
-          ]
-      );
-
-      return JSON.stringify(checks);
-    });
-  });
-
   extend(DiscussionPage.prototype, 'oncreate', function () {
     if (app.pusher) {
       app.pusher.then((binding) => {

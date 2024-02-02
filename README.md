@@ -10,31 +10,10 @@ A [Flarum](http://flarum.org) extension. A Flarum extension that adds lottery to
 composer require nodeloc/lottery:"*"
 ```
 
-#### Migrating from ReFlar Lottery
-
-Make sure you've updated to the latest `reflar/lottery` version and run `php flarum migrate` BEFORE installing `nodeloc/lottery`.
-You will not be able to install this extension if you have a version of ReFlar Lottery older than v1.3.4 as well.
-
-```sh
-$ composer require nodeloc/lottery
-$ php flarum migrate
-```
-
 ### Updating
 
 ```sh
 composer update nodeloc/lottery
-```
-
-### Metadata update
-
-To improve performance, Lottery calculates and stores the number of votes when it changes.
-
-As long as the extension is active, Lottery will automatically keep those numbers up to date and you don't need to do anything.
-
-If you are updating from a version prior to 0.3.3, if you disabled the extension for a while or if you made manual changes to the database you should run the following command to refresh the numbers:
-
-```sh
 php flarum nodeloc:lottery:refresh
 ```
 

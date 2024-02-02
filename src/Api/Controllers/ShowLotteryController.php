@@ -14,7 +14,7 @@ namespace Nodeloc\Lottery\Api\Controllers;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Http\RequestUtil;
 use Nodeloc\Lottery\Api\Serializers\LotterySerializer;
-use Nodeloc\Lottery\PollRepository;
+use Nodeloc\Lottery\LotteryRepository;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
@@ -26,16 +26,16 @@ class ShowLotteryController extends AbstractShowController
      */
     public $serializer = LotterySerializer::class;
 
-    public $include = ['options', 'myVotes', 'myVotes.option'];
+    public $include = [ 'lottery_participants'];
 
-    public $optionalInclude = ['votes', 'votes.option', 'votes.user'];
+    public $optionalInclude = ['participants','participants.status', 'participants.user'];
 
     /**
-     * @var PollRepository
+     * @var LotteryRepository
      */
     protected $lottery;
 
-    public function __construct(PollRepository $lottery)
+    public function __construct(LotteryRepository $lottery)
     {
         $this->lottery = $lottery;
     }

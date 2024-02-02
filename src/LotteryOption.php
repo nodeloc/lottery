@@ -13,16 +13,6 @@ namespace Nodeloc\Lottery;
 
 use Flarum\Database\AbstractModel;
 
-/**
- * @property int            $id
- * @property string         $answer
- * @property string         $image_url
- * @property Lottery           $lottery
- * @property int            $lottery_id
- * @property int            $vote_count
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- */
 class LotteryOption extends AbstractModel
 {
     /**
@@ -35,19 +25,21 @@ class LotteryOption extends AbstractModel
         'updated_at',
     ];
 
-    protected $fillable = ['answer', 'image_url'];
+    protected $fillable = ['operator_type', 'operator', 'operator_value'];
 
     /**
-     * @param $answer
-     *
+     * @param $type
+     * @param $operator
+     * @param $value
      * @return static
      */
-    public static function build($answer, $imageUrl = null)
+    public static function build($operator_type, $operator ,$operator_value)
     {
         $option = new static();
 
-        $option->answer = $answer;
-        $option->image_url = $imageUrl;
+        $option->operator_type = $operator_type;
+        $option->operator = $operator;
+        $option->operator_value = $operator_value;
 
         return $option;
     }
@@ -57,15 +49,4 @@ class LotteryOption extends AbstractModel
         return $this->belongsTo(Lottery::class);
     }
 
-    public function votes()
-    {
-        return $this->hasMany(LotteryVote::class, 'option_id');
-    }
-
-    public function refreshVoteCount(): self
-    {
-        $this->vote_count = $this->votes()->count();
-
-        return $this;
-    }
 }

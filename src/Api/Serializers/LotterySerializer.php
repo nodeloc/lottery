@@ -33,29 +33,20 @@ class LotterySerializer extends AbstractSerializer
         $canEdit = $this->actor->can('edit', $lottery);
 
         $attributes = [
-            'question'           => $lottery->question,
+            'prizes'           => $lottery->prizes,
+            'price'           => $lottery->price,
+            'amount'           => $lottery->amount,
             'hasEnded'           => $lottery->hasEnded(),
-            'allowMultipleVotes' => $lottery->allow_multiple_votes,
-            'maxVotes'           => $lottery->max_votes,
+            'min_participants'   => $lottery->min_participants,
+            'max_participants'   => $lottery->max_participants,
             'endDate'            => $this->formatDate($lottery->end_date),
             'createdAt'          => $this->formatDate($lottery->created_at),
             'updatedAt'          => $this->formatDate($lottery->updated_at),
-            'canVote'            => $this->actor->can('vote', $lottery),
+            'canEnter'            => $this->actor->can('enter', $lottery),
             'canEdit'            => $canEdit,
             'canDelete'          => $this->actor->can('delete', $lottery),
-            'canSeeVoters'       => $this->actor->can('seeVoters', $lottery),
-            'canChangeVote'      => $this->actor->can('changeVote', $lottery),
+            'canCancelEnter'      => $this->actor->can('cancelEnter', $lottery),
         ];
-
-        if ($this->actor->can('seeVoteCount', $lottery)) {
-            $attributes['voteCount'] = (int) $lottery->vote_count;
-        }
-
-        if ($canEdit) {
-            $attributes['publicPoll'] = $lottery->public_lottery;
-            $attributes['hideVotes'] = $lottery->hide_votes;
-            $attributes['allowChangeVote'] = $lottery->allow_change_vote;
-        }
 
         return $attributes;
     }
@@ -68,28 +59,28 @@ class LotterySerializer extends AbstractSerializer
         );
     }
 
-    public function votes($model)
+    public function participants($model)
     {
-        if ($this->actor->cannot('seeVoters', $model)) {
+        if ($this->actor->cannot('seeParticipants', $model)) {
             return null;
         }
 
         return $this->hasMany(
             $model,
-            LotteryVoteSerializer::class
+            LotteryParticipantsSerializer::class
         );
     }
 
-    public function myVotes($model)
+    public function lottery_participants($model)
     {
         Lottery::setStateUser($this->actor);
 
         // When called inside ShowDiscussionController, Flarum has already pre-loaded our relationship incorrectly
-        $model->unsetRelation('myVotes');
+        $model->unsetRelation('lottery_participants');
 
         return $this->hasMany(
             $model,
-            LotteryVoteSerializer::class
+            LotteryParticipantsSerializer::class
         );
     }
 }

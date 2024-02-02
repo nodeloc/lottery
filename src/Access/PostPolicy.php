@@ -19,7 +19,7 @@ class PostPolicy extends AbstractPolicy
 {
     public static $ALLOWED_POST_TYPES = ['comment'];
 
-    public function startPoll(User $actor, Post $post)
+    public function startLottery(User $actor, Post $post)
     {
         if (!in_array($post->type, static::$ALLOWED_POST_TYPES)) {
             return $this->deny();

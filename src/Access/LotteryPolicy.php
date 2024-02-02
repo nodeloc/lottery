@@ -17,20 +17,20 @@ use Nodeloc\Lottery\Lottery;
 
 class LotteryPolicy extends AbstractPolicy
 {
-    public function seeVoteCount(User $actor, Lottery $lottery)
+    public function seeLotteryCount(User $actor, Lottery $lottery)
     {
         if ($lottery->hide_votes && $lottery->end_date && !$lottery->hasEnded()) {
             return $this->deny();
         }
 
-        if ($lottery->myVotes($actor)->count() || $actor->can('lottery.viewResultsWithoutVoting', $lottery->post->discussion)) {
+        if ($lottery->lottery_participants($actor)->count() || $actor->can('lottery.viewResultsWithoutVoting', $lottery->post->discussion)) {
             return $this->allow();
         }
     }
 
-    public function seeVoters(User $actor, Lottery $lottery)
+    public function seeParticipants(User $actor, Lottery $lottery)
     {
-        if (!$actor->can('seeVoteCount', $lottery)) {
+        if (!$actor->can('seeLotteryCount', $lottery)) {
             return $this->deny();
         }
 
@@ -46,16 +46,16 @@ class LotteryPolicy extends AbstractPolicy
         }
     }
 
-    public function vote(User $actor, Lottery $lottery)
+    public function enter(User $actor, Lottery $lottery)
     {
-        if ($actor->can('lottery.vote', $lottery->post->discussion) && !$lottery->hasEnded()) {
+        if ($actor->can('lottery.enter', $lottery->post->discussion) && !$lottery->hasEnded()) {
             return $this->allow();
         }
     }
 
-    public function changeVote(User $actor, Lottery $lottery)
+    public function cancelEnter(User $actor, Lottery $lottery)
     {
-        if ($lottery->allow_change_vote && $actor->hasPermission('lottery.changeVote')) {
+        if ($lottery->allow_change_vote && $actor->hasPermission('lottery.cancelEnter')) {
             return $this->allow();
         }
     }

@@ -21,7 +21,7 @@ return Migration::createTable('lottery_votes', function (Blueprint $table) {
 
     $table->timestamps();
 
-    $table->foreign('lottery_id')->references('id')->on('lottery')->onDelete('cascade');
+    $table->foreign('lottery_id')->references('id')->on('lotteries')->onDelete('cascade');
     $table->foreign('option_id')->references('id')->on('lottery_options')->onDelete('cascade');
     $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
 });

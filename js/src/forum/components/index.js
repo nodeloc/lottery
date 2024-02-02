@@ -1,11 +1,11 @@
 import CreateLotteryModal from './CreateLotteryModal';
 import PostLottery from './PostLottery';
 import EditLotteryModal from './EditLotteryModal';
-import ListVotersModal from './ListVotersModal';
+import ListLotteryModal from './ListLotteryModal';
 
 export const components = {
   CreateLotteryModal: CreateLotteryModal,
   PostLottery: PostLottery,
   EditLotteryModal: EditLotteryModal,
-  ListVotersModal,
+  ListVotersModal: ListLotteryModal,
 };

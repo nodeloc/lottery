@@ -15,7 +15,7 @@ class AddPostAttributes
 {
     public function __invoke($serializer, $post, $attributes)
     {
-        $attributes['canStartLottery'] = $serializer->getActor()->can('startPoll', $post);
+        $attributes['canStartLottery'] = $serializer->getActor()->can('startLottery', $post);
 
         return $attributes;
     }

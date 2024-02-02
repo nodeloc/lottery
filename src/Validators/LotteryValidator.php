@@ -20,8 +20,9 @@ class LotteryValidator extends AbstractValidator
     protected function getRules()
     {
         return [
-            'question'   => 'required',
-            'publicPoll' => 'nullable|boolean',
+            'prizes'   => 'required',
+            'price'   => 'required',
+            'amount'   => 'required',
             'endDate'    => [
                 'nullable',
                 // max of 'timestamp' SQL column is 2038-01-18

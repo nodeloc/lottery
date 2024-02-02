@@ -1,9 +1,9 @@
 import Lottery from './Lottery';
 import LotteryOption from './LotteryOption';
-import LotteryVote from './LotteryVote';
+import LotteryParticipants from './LotteryParticipants';
 
 export const models = {
-  Poll: Lottery,
-  PollOption: LotteryOption,
-  PollVote: LotteryVote,
+  Lottery: Lottery,
+  LotteryOption: LotteryOption,
+  LotteryParticipants: LotteryParticipants,
 };

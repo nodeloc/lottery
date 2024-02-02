@@ -25,6 +25,114 @@
   }
 }
 
+.countdown-container {
+  #clockdiv {
+    font-family: Helvetica, sans-serif ;
+    color: #fff;
+    display: inline-block;
+    font-weight: 100;
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: -30px;
+  }
+
+
+  #clockdiv > div {
+    padding: 10px;
+    display: inline-block;
+  }
+
+  #clockdiv div > span {
+    padding: 15px;
+    border-radius: 3px;
+    background: @primary-color;
+    display: inline-block;
+  }
+
+  i.fontawicon {
+    margin-right: 8px;
+  }
+
+  .smalltext {
+    padding-top: 5px;
+    font-size: 16px;
+    color: @primary-color;
+  }
+
+  .cntdwn-widget {
+    width: 160px;
+    margin: 0px -40px;
+  }
+
+  .countdown-container {
+    text-align: center;
+  }
+}
+
+.event-text {
+  color: @primary-color;
+}
+
+h2.event-text {
+  margin-bottom: 1px;
+  margin-top: 0px;
+}
+
+/*@media screen and (max-width: 1099px) {
+  .countdown-container {
+    display: none;
+  }
+}*/
+.letterpress {
+  font-family: Helvetica, sans-serif;
+  text-shadow: 1px 2px 3px #DDEEFF,
+  0 0 0 black,
+  -1px 1px 0 #DDEEFF,
+  1px 1px 0 white;
+  margin-top: 0px;
+  color: @primary-color;
+  letter-spacing: -5px;
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.MinMaxSelector {
+  .MinMaxSelector--inputs {
+    display: flex
+  }
+
+  .MinMaxSelector--inputs .Button {
+    --button-color: #93806c;
+    --button-bg: #000;
+    --button-bg-hover: #000;
+    --button-bg-active: #000;
+    --button-bg-disabled: #000
+  }
+
+  .MinMaxSelector--inputs .Button .icon {
+    margin-right: 0
+  }
+
+  .MinMaxSelector--inputs .MinMaxSelector--placeholder {
+    text-align: center
+  }
+
+  .MinMaxSelector--inputs > :not(:first-child):not(:last-child) {
+    border-radius: 0
+  }
+
+  .MinMaxSelector--inputs > :first-child:not(:last-child) {
+    margin-left: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0
+  }
+
+  .MinMaxSelector--inputs > :last-child:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0
+  }
+}
+
 .LotteryDiscussionModal {
   .Form-group {
     margin-top: 5px;
@@ -113,12 +221,10 @@
   }
 
   .LotteryOptions {
-    display: grid;
-    grid: auto-flow / repeat(auto-fit, minmax(~"min(250px, 100%)", 1fr));
-    column-gap: 30px;
-    row-gap: 15px;
+    display: block;
     margin-left: 15px;
-    align-items: start;
+    border: 1px solid @primary-color;
+    padding: 20px;
 
     .LotteryAnswer when (@nodeloc-lottery-options-color-blend = true) {
       &-checkbox, &-text {
@@ -132,7 +238,22 @@
       }
     }
   }
+  .PrizeInfo{
+    display: block;
+    margin-left: 15px;
+    border: 1px solid @primary-color;
+    background-color: #FFCCCC;
+    padding: 20px;
+    background-size: cover;
+    background-image: url(/assets/lottery_bg.png);
+    background-color: rgba(255,255,255,0.5);
 
+    .PrizeDetails{
+      color:@primary-color;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
   .Lottery-sticky {
     position: sticky;
     bottom: 0;
@@ -193,6 +314,7 @@
   }
 
   /* Percent */
+
   .LotteryPercent {
     padding-right: 5px;
     font-size: 11px;
@@ -269,10 +391,8 @@
       right: 0;
       left: 0;
       z-index: -1;
-      background-image: linear-gradient(
-        to right,
-        var(--lottery-option-color) 0% 100%
-      );
+      background-image: linear-gradient(to right,
+      var(--lottery-option-color) 0% 100%);
       background-size: var(--lottery-option-width) 100%;
       background-repeat: no-repeat;
       content: '';
@@ -353,6 +473,7 @@
         text-decoration: underline;
       }
     }
+
     .Avatar {
       .Avatar--size(32px);
       vertical-align: middle;

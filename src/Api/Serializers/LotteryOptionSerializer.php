@@ -31,11 +31,12 @@ class LotteryOptionSerializer extends AbstractSerializer
     protected function getDefaultAttributes($option)
     {
         $attributes = [
-            'answer'      => $option->answer,
-            'imageUrl'    => $option->image_url,
+            'operator_type'      => $option->operator_type,
+            'operator'    => $option->operator,
+            'operator_value'    => $option->operator_value,
             'createdAt'   => $this->formatDate($option->created_at),
             'updatedAt'   => $this->formatDate($option->updated_at),
-            'voteCount'   => $this->actor->can('seeVoteCount', $option->lottery) ? (int) $option->vote_count : null,
+            'voteCount'   => $this->actor->can('seeLotteryCount', $option->lottery) ? (int) $option->vote_count : null,
         ];
 
         return $attributes;

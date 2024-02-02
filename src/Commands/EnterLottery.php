@@ -13,7 +13,7 @@ namespace Nodeloc\Lottery\Commands;
 
 use Flarum\User\User;
 
-class MultipleVotesLottery
+class EnterLottery
 {
     /**
      * @var User
@@ -26,19 +26,13 @@ class MultipleVotesLottery
     public $lotteryId;
 
     /**
-     * @var array
-     */
-    public $data;
-
-    /**
      * @param User  $actor
      * @param int   $lotteryId
      * @param array $data
      */
-    public function __construct(User $actor, int $lotteryId, array $data)
+    public function __construct(User $actor, int $lotteryId)
     {
         $this->actor = $actor;
         $this->lotteryId = $lotteryId;
-        $this->data = $data;
     }
 }

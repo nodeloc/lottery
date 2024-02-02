@@ -61,7 +61,7 @@ class CreateLotteryHandler
 
     public function handle(CreateLottery $command)
     {
-        $command->actor->assertCan('startPoll', $command->post);
+        $command->actor->assertCan('startLottery', $command->post);
 
         $attributes = $command->data;
 
@@ -74,8 +74,9 @@ class CreateLotteryHandler
         if (is_array($rawOptionsData)) {
             foreach ($rawOptionsData as $rawOptionData) {
                 $optionsData[] = [
-                    'answer'   => Arr::get($rawOptionData, 'answer'),
-                    'imageUrl' => Arr::get($rawOptionData, 'imageUrl') ?: null,
+                    'operator_type'   => Arr::get($rawOptionData, 'operator_type'),
+                    'operator' => Arr::get($rawOptionData, 'operator'),
+                    'operator_value' => Arr::get($rawOptionData, 'operator_value'),
                 ];
             }
         }
@@ -87,8 +88,7 @@ class CreateLotteryHandler
             // This ensures every attribute will be validated (Flarum doesn't validate missing keys)
             $this->optionValidator->assertValid($optionData);
         }
-
-        return ($command->savePollOn)(function () use ($optionsData, $attributes, $command) {
+        return ($command->saveLotteryOn)(function () use ($optionsData, $attributes, $command) {
             $endDate = Arr::get($attributes, 'endDate');
             $carbonDate = Carbon::parse($endDate);
 
@@ -97,15 +97,15 @@ class CreateLotteryHandler
             }
 
             $lottery = Lottery::build(
-                Arr::get($attributes, 'question'),
+                Arr::get($attributes, 'prizes'),
                 $command->post->id,
                 $command->actor->id,
                 $carbonDate != null ? $carbonDate->utc() : null,
-                Arr::get($attributes, 'publicPoll'),
-                Arr::get($attributes, 'allowMultipleVotes'),
-                Arr::get($attributes, 'maxVotes'),
-                Arr::get($attributes, 'hideVotes'),
-                Arr::get($attributes, 'allowChangeVote'),
+                Arr::get($attributes, 'price'),
+                Arr::get($attributes, 'amount'),
+                Arr::get($attributes, 'min_participants'),
+                Arr::get($attributes, 'max_participants'),
+                Arr::get($attributes, 'can_cancel_enter'),
             );
 
             $this->events->dispatch(new SavingLotteryAttributes($command->actor, $lottery, $attributes, $attributes));
@@ -115,14 +115,7 @@ class CreateLotteryHandler
             $this->events->dispatch(new LotteryWasCreated($command->actor, $lottery));
 
             foreach ($optionsData as $optionData) {
-                $imageUrl = Arr::get($optionData, 'imageUrl');
-
-                if (!$this->settings->get('nodeloc-lottery.allowOptionImage')) {
-                    $imageUrl = null;
-                }
-
-                $option = LotteryOption::build(Arr::get($optionData, 'answer'), $imageUrl);
-
+                $option = LotteryOption::build(Arr::get($optionData, 'operator_type'), Arr::get($optionData, 'operator'),Arr::get($optionData, 'operator_value'));
                 $lottery->options()->save($option);
             }
 

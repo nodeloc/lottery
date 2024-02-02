@@ -34,20 +34,20 @@ class CreateLottery
     /**
      * @var callable
      */
-    public $savePollOn;
+    public $saveLotteryOn;
 
     /**
      * @param User          $actor
      * @param Post          $post
      * @param array         $data
-     * @param callable|null $savePollOn
+     * @param callable|null $saveLotteryOn
      */
-    public function __construct(User $actor, Post $post, array $data, callable $savePollOn = null)
+    public function __construct(User $actor, Post $post, array $data, callable $saveLotteryOn = null)
     {
         $this->actor = $actor;
         $this->post = $post;
         $this->data = $data;
-        $this->savePollOn = $savePollOn ?: function (callable $callback) {
+        $this->saveLotteryOn = $saveLotteryOn ?: function (callable $callback) {
             return $callback();
         };
     }

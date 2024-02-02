@@ -14,17 +14,7 @@ namespace Nodeloc\Lottery;
 use Flarum\Database\AbstractModel;
 use Flarum\User\User;
 
-/**
- * @property Lottery           $lottery
- * @property LotteryOption     $option
- * @property User           $user
- * @property int            $lottery_id
- * @property int            $option_id
- * @property int            $user_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- */
-class LotteryVote extends AbstractModel
+class LotteryParticipants extends AbstractModel
 {
     /**
      * {@inheritdoc}
@@ -39,7 +29,7 @@ class LotteryVote extends AbstractModel
         'updated_at',
     ];
 
-    protected $fillable = ['user_id', 'option_id'];
+    protected $fillable = ['user_id'];
 
     /**
      * @param $lotteryId
@@ -48,25 +38,19 @@ class LotteryVote extends AbstractModel
      *
      * @return static
      */
-    public static function build($lotteryId, $userId, $optionId)
+    public static function build($lotteryId, $userId)
     {
-        $vote = new static();
+        $participants = new static();
 
-        $vote->lottery_id = $lotteryId;
-        $vote->user_id = $userId;
-        $vote->option_id = $optionId;
+        $participants->lottery_id = $lotteryId;
+        $participants->user_id = $userId;
 
-        return $vote;
+        return $participants;
     }
 
     public function lottery()
     {
         return $this->belongsTo(Lottery::class);
-    }
-
-    public function option()
-    {
-        return $this->belongsTo(LotteryOption::class);
     }
 
     public function user()

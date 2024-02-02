@@ -11,11 +11,12 @@
 
 namespace Nodeloc\Lottery\Events;
 
+use AllowDynamicProperties;
 use Flarum\User\User;
 use Nodeloc\Lottery\Lottery;
-use Illuminate\Support\Collection;
+use Nodeloc\Lottery\LotteryParticipants;
 
-class LotteryVotesChanged
+class LotteryWasEntered
 {
     /**
      * @var User
@@ -28,28 +29,28 @@ class LotteryVotesChanged
     public $lottery;
 
     /**
-     * @var Collection
+     * @var LotteryParticipants
      */
-    public $unvotedOptionIds;
+    public $participants;
 
     /**
-     * @var Collection
+     * @var bool
      */
-    public $votedOptionIds;
+    public $status;
 
     /**
      * LotteryWasCreated constructor.
      *
-     * @param User       $actor
-     * @param Lottery       $lottery
-     * @param Collection $unvotedOptionIds
-     * @param Collection $votedOptionIds
+     * @param User     $actor
+     * @param Lottery     $lottery
+     * @param LotteryParticipants $participants
+     * @param bool $status
      */
-    public function __construct(User $actor, Lottery $lottery, Collection $unvotedOptionIds, Collection $votedOptionIds)
+    public function __construct(User $actor, Lottery $lottery, LotteryParticipants $participants, $status = False)
     {
         $this->actor = $actor;
         $this->lottery = $lottery;
-        $this->unvotedOptionIds = $unvotedOptionIds;
-        $this->votedOptionIds = $votedOptionIds;
+        $this->participants = $participants;
+        $this->status = $status;
     }
 }

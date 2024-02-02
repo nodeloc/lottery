@@ -1,27 +1,26 @@
 import Model from 'flarum/common/Model';
 
 export default class Lottery extends Model {
-  question = Model.attribute('question');
+  prizes = Model.attribute('prizes');
   hasEnded = Model.attribute('hasEnded');
   endDate = Model.attribute('endDate');
 
-  publicLottery = Model.attribute('publicLottery');
-  hideVotes = Model.attribute('hideVotes');
-  allowChangeVote = Model.attribute('allowChangeVote');
-  allowMultipleVotes = Model.attribute('allowMultipleVotes');
-  maxVotes = Model.attribute('maxVotes');
+  price = Model.attribute('price');
+  amount = Model.attribute('amount');
+  min_participants = Model.attribute('min_participants');
+  max_participants = Model.attribute('max_participants');
 
-  voteCount = Model.attribute('voteCount');
+  enterCount = Model.attribute('enter_count');
 
-  canVote = Model.attribute('canVote');
+  canEnter = Model.attribute('canEnter');
   canEdit = Model.attribute('canEdit');
   canDelete = Model.attribute('canDelete');
-  canSeeVoters = Model.attribute('canSeeVoters');
-  canChangeVote = Model.attribute('canChangeVote');
+  canSeeParticipants = Model.attribute('canSeeParticipants');
+  canCancelEnter = Model.attribute('can_cancel_enter');
 
   options = Model.hasMany('options');
-  votes = Model.hasMany('votes');
-  myVotes = Model.hasMany('myVotes');
+  participants = Model.hasMany('participants');
+  lottery_participants = Model.hasMany('lottery_participants');
 
   apiEndpoint() {
     return `/nodeloc/lottery${this.exists ? `/${this.data.id}` : ''}`;

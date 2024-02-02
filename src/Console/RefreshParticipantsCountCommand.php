@@ -15,25 +15,18 @@ use Nodeloc\Lottery\Lottery;
 use Nodeloc\Lottery\LotteryOption;
 use Illuminate\Console\Command;
 
-class RefreshVoteCountCommand extends Command
+class RefreshParticipantsCountCommand extends Command
 {
     protected $signature = 'nodeloc:lottery:refresh';
 
-    protected $description = 'Re-calculate the total number of votes per option';
+    protected $description = 'Re-calculate the total number of participants in lottery.';
 
     public function handle()
     {
-        $progress = $this->output->createProgressBar(Lottery::query()->count() + LotteryOption::query()->count());
+        $progress = $this->output->createProgressBar(Lottery::query()->count());
 
         Lottery::query()->each(function (Lottery $lottery) use ($progress) {
-            $lottery->refreshVoteCount()->save();
-
-            $progress->advance();
-        });
-
-        LotteryOption::query()->each(function (LotteryOption $option) use ($progress) {
-            $option->refreshVoteCount()->save();
-
+            $lottery->refreshParticipantsCount()->save();
             $progress->advance();
         });
 

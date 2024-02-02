@@ -1,14 +1,13 @@
 import Model from 'flarum/common/Model';
 
 export default class LotteryOption extends Model {
-  answer = Model.attribute('answer');
-  imageUrl = Model.attribute('imageUrl');
-  voteCount = Model.attribute('voteCount');
+  operator_type = Model.attribute('operator_type');
+  operator = Model.attribute('operator');
+  operator_value = Model.attribute('operator_value');
 
   lottery = Model.hasOne('lottery');
-  votes = Model.hasMany('votes');
 
   apiEndpoint() {
-    return `/nodeloc/lottery/answers${this.exists ? `/${this.data.id}` : ''}`;
+    return `/nodeloc/lottery/operator${this.exists ? `/${this.data.id}` : ''}`;
   }
 }

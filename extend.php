@@ -39,7 +39,7 @@ return [
         ->get('/nodeloc/lottery/{id}', 'nodeloc.lottery.show', Controllers\ShowLotteryController::class)
         ->patch('/nodeloc/lottery/{id}', 'nodeloc.lottery.edit', Controllers\EditLotteryController::class)
         ->delete('/nodeloc/lottery/{id}', 'nodeloc.lottery.delete', Controllers\DeleteLotteryController::class)
-        ->patch('/nodeloc/lottery/{id}/votes', 'nodeloc.lottery.votes', Controllers\MultipleVotesLotteryController::class),
+        ->patch('/nodeloc/lottery/{id}/enter', 'nodeloc.lottery.enter', Controllers\EnterLotteryController::class),
 
     (new Extend\Model(Post::class))
         ->hasMany('lottery', Lottery::class, 'post_id', 'id'),
@@ -65,27 +65,29 @@ return [
         ->addOptionalInclude(['firstPost.lottery']),
 
     (new Extend\ApiController(Controller\ShowDiscussionController::class))
-        ->addInclude(['posts.lottery', 'posts.lottery.options', 'posts.lottery.myVotes', 'posts.lottery.myVotes.option'])
-        ->addOptionalInclude(['posts.lottery.votes', 'posts.lottery.votes.user', 'posts.lottery.votes.option']),
+        ->addInclude(['posts.lottery', 'posts.lottery.options', 'posts.lottery.lottery_participants', 'posts.lottery.lottery_participants.option'])
+        ->addOptionalInclude(['posts.lottery.participants', 'posts.lottery.participants.user']),
 
     (new Extend\ApiController(Controller\CreateDiscussionController::class))
-        ->addInclude(['firstPost.lottery', 'firstPost.lottery.options', 'firstPost.lottery.myVotes', 'firstPost.lottery.myVotes.option'])
-        ->addOptionalInclude(['firstPost.lottery.votes', 'firstPost.lottery.votes.user', 'firstPost.lottery.votes.option']),
+        ->addInclude(['firstPost.lottery', 'firstPost.lottery.options', 'firstPost.lottery.lottery_participants', 'firstPost.lottery.lottery_participants.option'])
+        ->addOptionalInclude(['firstPost.lottery.participants', 'firstPost.lottery.participants.user']),
 
     (new Extend\ApiController(Controller\CreatePostController::class))
-        ->addInclude(['lottery', 'lottery.options', 'lottery.myVotes', 'lottery.myVotes.option'])
-        ->addOptionalInclude(['lottery.votes', 'lottery.votes.user', 'lottery.votes.option']),
+        ->addInclude(['lottery', 'lottery.options', 'lottery.participants', 'lottery.participants.user'])
+        ->addOptionalInclude(['lottery.participants', 'lottery.participants.user']),
 
     (new Extend\ApiController(Controller\ListPostsController::class))
-        ->addInclude(['lottery', 'lottery.options', 'lottery.myVotes', 'lottery.myVotes.option'])
-        ->addOptionalInclude(['lottery.votes', 'lottery.votes.user', 'lottery.votes.option']),
+        ->addInclude(['lottery', 'lottery.options', 'lottery.participants', 'lottery.participants.user', 'lottery.lottery_participants'])
+        ->addOptionalInclude(['lottery.participants', 'lottery.participants.user']),
 
     (new Extend\ApiController(Controller\ShowPostController::class))
-        ->addInclude(['lottery', 'lottery.options', 'lottery.myVotes', 'lottery.myVotes.option'])
-        ->addOptionalInclude(['lottery.votes', 'lottery.votes.user', 'lottery.votes.option']),
+        ->addInclude(['lottery', 'lottery.options', 'lottery.participants', 'lottery.participants.user', 'lottery.lottery_participants'])
+        ->addOptionalInclude(['lottery.participants', 'lottery.participants.user']),
+
 
     (new Extend\Console())
-        ->command(Console\RefreshVoteCountCommand::class),
+        ->command(Console\RefreshParticipantsCountCommand::class)
+        ->schedule(Console\DrawCommand::class,Console\DrawSchedule::class),
 
     (new Extend\Policy())
         ->modelPolicy(Lottery::class, Access\LotteryPolicy::class)

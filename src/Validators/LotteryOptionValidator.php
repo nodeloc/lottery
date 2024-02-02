@@ -18,8 +18,9 @@ class LotteryOptionValidator extends AbstractValidator
     protected function getRules()
     {
         return [
-            'answer'   => ['required', 'string', 'max:255'],
-            'imageUrl' => ['nullable', 'url', 'max:255'],
+            'operator_type'   => ['required', 'string', 'max:256'],
+            'operator' => ['required', 'integer', 'max:1'],
+            'operator_value' => ['required', 'integer', 'max:999999'],
         ];
     }
 }
