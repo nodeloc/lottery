@@ -100,7 +100,7 @@ class CreateLotteryHandler
                 Arr::get($attributes, 'prizes'),
                 $command->post->id,
                 $command->actor->id,
-                $carbonDate != null ? $carbonDate->utc() : null,
+                $carbonDate != null ? $carbonDate->setTimezone('Asia/Shanghai') : null,
                 Arr::get($attributes, 'price'),
                 Arr::get($attributes, 'amount'),
                 Arr::get($attributes, 'min_participants'),

@@ -87,6 +87,7 @@ return [
 
     (new Extend\Console())
         ->command(Console\RefreshParticipantsCountCommand::class)
+        ->command(Console\DrawCommand::class)
         ->schedule(Console\DrawCommand::class,Console\DrawSchedule::class),
 
     (new Extend\Policy())

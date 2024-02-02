@@ -91,7 +91,7 @@ class EditLotteryHandler
                 $date = Carbon::parse($endDate);
 
                 if (!$lottery->hasEnded() && $date->isFuture() && ($lottery->end_date === null || $lottery->end_date->lessThanOrEqualTo($date))) {
-                    $lottery->end_date = $date->utc();
+                    $lottery->end_date = $date->setTimezone('Asia/Shanghai');
                 }
             } elseif (is_bool($endDate) && !$endDate) {
                 $lottery->end_date = null;

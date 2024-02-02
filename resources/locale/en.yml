@@ -90,3 +90,6 @@ nodeloc-lottery:
 
     participants_modal:
       title: Participants
+  email:
+    subject:
+      drawLottery: Draw lottery notification

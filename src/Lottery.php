@@ -34,7 +34,7 @@ class Lottery extends AbstractModel
         'end_date'   => 'datetime',
     ];
     public $fillable = [
-        'enter_count',
+        'enter_count','status',
     ];
     public static function build($prizes, $postId, $actorId, $endDate, $price, $amount, $min_participants=0, $max_participants=999999,$can_cancel_enter = false)
     {
