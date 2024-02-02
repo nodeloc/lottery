@@ -33,19 +33,22 @@ class LotterySerializer extends AbstractSerializer
         $canEdit = $this->actor->can('edit', $lottery);
 
         $attributes = [
-            'prizes'           => $lottery->prizes,
-            'price'           => $lottery->price,
-            'amount'           => $lottery->amount,
-            'hasEnded'           => $lottery->hasEnded(),
-            'min_participants'   => $lottery->min_participants,
-            'max_participants'   => $lottery->max_participants,
-            'endDate'            => $this->formatDate($lottery->end_date),
-            'createdAt'          => $this->formatDate($lottery->created_at),
-            'updatedAt'          => $this->formatDate($lottery->updated_at),
-            'canEnter'            => $this->actor->can('enter', $lottery),
-            'canEdit'            => $canEdit,
-            'canDelete'          => $this->actor->can('delete', $lottery),
-            'canCancelEnter'      => $this->actor->can('cancelEnter', $lottery),
+            'prizes' => $lottery->prizes,
+            'price' => $lottery->price,
+            'amount' => $lottery->amount,
+            'hasEnded' => $lottery->hasEnded(),
+            'min_participants' => $lottery->min_participants,
+            'max_participants' => $lottery->max_participants,
+            'enter_count' => $lottery->enter_count,
+            'status' => $lottery->status,
+            'endDate' => $this->formatDate($lottery->end_date),
+            'createdAt' => $this->formatDate($lottery->created_at),
+            'updatedAt' => $this->formatDate($lottery->updated_at),
+            'canEnter' => $this->actor->can('enter', $lottery),
+            'canEdit' => $canEdit,
+            'canDelete' => $this->actor->can('delete', $lottery),
+            'canCancelEnter' => $this->actor->can('cancelEnter', $lottery),
+            'canSeeParticipants'       => $this->actor->hasPermission('lottery.seeParticipants'),
         ];
 
         return $attributes;
@@ -61,7 +64,7 @@ class LotterySerializer extends AbstractSerializer
 
     public function participants($model)
     {
-        if ($this->actor->cannot('seeParticipants', $model)) {
+        if (!$this->actor->hasPermission('lottery.seeParticipants')) {
             return null;
         }
 

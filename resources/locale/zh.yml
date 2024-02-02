@@ -1,0 +1,97 @@
+nodeloc-lottery:
+  admin:
+    settings:
+      allow_option_image: Allow an image URL to be provided for each lottery option
+      max_options: Maximum number of options per lottery
+      options_color_blend: Color blend text in lottery options
+      options_color_blend_help: Use this to use color mixing to make the lottery options more readable. Disable if this feature causes issues with your forum's appearance, reducing readability.
+    permissions:
+      seeParticipants: View results without voting
+      start: Start a lottery
+      self_edit: Edit created lotterys (requires post edit permission)
+      self_post_edit: Edit *all* lotterys on own posts (requires post edit permission)
+      enter:  Can enter a lottery
+      canCancelEnter: Can Change enter
+      moderate: Edit & remove lotterys
+
+  forum:
+    days_remaining: {time} 后开奖.
+    no_permission: 你无权参与
+    lottery_ended: 抽奖活动已结束
+    public_lottery: 查看参与者
+    max_votes_allowed: "lottery allows voting for {max, plural, one {# option} other {# options}}."
+    widget-title: 抽奖结果揭晓于...
+    days: Days
+    hours: Hours
+    minutes: Minutes
+    seconds: Seconds
+    endDateText: 抽奖活动已结束!
+    hurry_up: 好事将近!! 距离开奖还有...
+    had_enter: 您已经参与此活动.
+    too_many_participants: 人数爆满，没有名额了
+
+    lottery:
+      cannot_cancel_lottery: 用户无法取消参与
+      submit_button: 点此抽奖
+
+    composer_discussion:
+      add_lottery: => nodeloc-lottery.forum.moderation.add
+      edit_lottery: => nodeloc-lottery.forum.moderation.edit
+      no_permission_alert: 您无权发布抽奖帖.
+      in_queue_alert: 您已经参与了此抽奖.
+
+    modal:
+      add_title: 发布抽奖
+      lottery_placeholder: 奖品
+      price: 费用(参与此活动需要消耗的能量)
+      amount: 数量(奖品总数量)
+      min_participants: 最少人数
+      max_participants: 最多人数
+      add_option_label: Add an Option
+      date_placeholder: 开奖时间
+      edit_title: 编辑抽奖
+      include_prizes: 奖品名称必须要填写
+      include_price: 费用必须要填写
+      include_amount: 数量必须要填写
+      include_end_date: 开奖时间必须要填写
+      max: You can have a maximum of {max} answers
+      min: You must include a minimum of 2 answers
+      no_participants: 暂无参与者或者您无权查看
+      option_placeholder: 数量
+      image_option_placeholder: Image URL (optional)
+      options_label: 限制条件
+      public_lottery_label: Allow people to see who voted
+      allow_multiple_votes_label: Allow people to enter for multiple options
+      participants_label: 参与者
+      participants_help: 不足最低抽奖取消，超过最多不能参与
+      hide_votes_label: Hide votes until lottery ends
+      allow_cancel_enter_label: 允许用户取消参与
+      submit: 提交
+      discussions_started: 主题数量
+      posts_made: 回复数量
+      likes_given: 给出的赞
+      likes_received: 收到的赞
+      best_answers: 最佳答案数
+      moderator_strikes: Moderator strikes
+      money: 能量
+      lotteries_made: 抽奖帖数
+      not_enough: 不足
+
+
+    moderation:
+      add: 添加奖品
+      delete: 移除奖品
+      delete_confirm: 你确认要删除奖品么？
+      edit: 编辑奖品
+
+    tooltip:
+      badge: 抽奖
+      votes: "{count, plural, one {# enter} other {# votes}}"
+
+    participants_modal:
+      title: 参与者
+      title_winners: 中奖者
+
+  email:
+    subject:
+      drawLottery: 抽奖通知

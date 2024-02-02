@@ -22,13 +22,10 @@ export default class PostLottery extends Component {
 
   oncreate(vnode) {
     super.oncreate(vnode);
-    this.preventClose = this.preventClose.bind(this);
-    window.addEventListener('beforeunload', this.preventClose);
   }
 
   onremove(vnode) {
     super.onremove(vnode);
-    window.removeEventListener('beforeunload', this.preventClose);
   }
 
   view() {
@@ -61,12 +58,23 @@ export default class PostLottery extends Component {
               <div>{app.translator.trans('nodeloc-lottery.forum.modal.lottery_placeholder')}: {lottery.prizes()}</div>
               <div>{app.translator.trans('nodeloc-lottery.forum.modal.amount')}: {lottery.amount()}</div>
               <div>{app.translator.trans('nodeloc-lottery.forum.modal.price')}: {lottery.price()}</div>
-              <div>{app.translator.trans('nodeloc-lottery.forum.modal.min_participants')}: {lottery.min_participants()}</div>
-              <div>{app.translator.trans('nodeloc-lottery.forum.modal.max_participants')}: {lottery.max_participants()}</div>
+              {lottery.min_participants()!==0 &&(<div>{app.translator.trans('nodeloc-lottery.forum.modal.min_participants')}: {lottery.min_participants()}</div>)}
+              {lottery.max_participants()<9999 &&(<div>{app.translator.trans('nodeloc-lottery.forum.modal.max_participants')}: {lottery.max_participants()}</div>)}
             </div>
             <EventCountDown endDate={endDate} />
           </div>
           <div className="LotteryOptions">
+            {
+                lottery.min_participants() > 0 && lottery.enterCount() && m('.arrow', [
+                  m('.arrow-status', {
+                    style: {
+                      width: (lottery.enterCount() / lottery.min_participants()) * 100 + '%'
+                    }
+                  }, [
+                    m('span.arrow-pointer', '已有' + lottery.enterCount() + '人 / 最低' + lottery.min_participants() + '人')
+                  ])
+                ])
+            }
             <h2 class="event-text"><i class='fas fa-info-circle fontawicon'></i> {app.translator.trans('nodeloc-lottery.forum.modal.options_label')}</h2>
             <ul>
             {options.map(this.viewOption.bind(this))}
@@ -189,13 +197,5 @@ export default class PostLottery extends Component {
         m.redraw.sync();
       });
     }
-  }
-
-  /**
-   * Alert before navigating away using browser's 'beforeunload' event
-   */
-  preventClose(e) {
-      e.preventDefault();
-      return true;
   }
 }

@@ -6,7 +6,7 @@ nodeloc-lottery:
       options_color_blend: Color blend text in lottery options
       options_color_blend_help: Use this to use color mixing to make the lottery options more readable. Disable if this feature causes issues with your forum's appearance, reducing readability.
     permissions:
-      view_results_without_Enter: View results without voting
+      seeParticipants: View participants
       start: Start a lottery
       self_edit: Edit created lotterys (requires post edit permission)
       self_post_edit: Edit *all* lotterys on own posts (requires post edit permission)
@@ -90,6 +90,8 @@ nodeloc-lottery:
 
     participants_modal:
       title: Participants
+      title_winners: Winners
+
   email:
     subject:
       drawLottery: Draw lottery notification

@@ -16,7 +16,7 @@ use Flarum\Foundation\ValidationException;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\PermissionDeniedException;
 use Flarum\User\User;
-use Nodeloc\Lottery\Events\LotteryEnterChanged;
+use Nodeloc\Lottery\Events\LotteryCancelEnter;
 use Nodeloc\Lottery\Events\LotteryWasEntered;
 use Nodeloc\Lottery\Lottery;
 use Nodeloc\Lottery\LotteryRepository;

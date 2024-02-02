@@ -91,7 +91,6 @@ h2.event-text {
   1px 1px 0 white;
   margin-top: 0px;
   color: @primary-color;
-  letter-spacing: -5px;
   font-size: 50px;
   font-weight: bold;
 }
@@ -225,6 +224,11 @@ h2.event-text {
     margin-left: 15px;
     border: 1px solid @primary-color;
     padding: 20px;
+    color: @primary-color;
+
+    .li{
+      list-style: circle;
+    }
 
     .LotteryAnswer when (@nodeloc-lottery-options-color-blend = true) {
       &-checkbox, &-text {
@@ -245,7 +249,7 @@ h2.event-text {
     background-color: #FFCCCC;
     padding: 20px;
     background-size: cover;
-    background-image: url(/assets/lottery_bg.png);
+    background-image: url(/assets/covers/lottery_bg.png);
     background-color: rgba(255,255,255,0.5);
 
     .PrizeDetails{
@@ -506,7 +510,39 @@ h2.event-text {
     margin-right: 2.5px;
   }
 }
+.arrow {
+  position: relative;
+  width: 100%;
+  border-radius: 5px;
+  height: 2em;
+  margin-bottom: 2em;
+  border: 1px solid @primary-color;
+}
 
+.arrow-status {
+  text-align: right;
+  padding-top: .3em;
+  padding-right: .8em;
+  border-color: white;
+  border-right: 0.5em solid #ffca95;
+  width: 0%;
+  color: @primary-color;
+  height: 100%;
+  line-height: 1.2em;
+  -webkit-animation: width .5s ease-in;
+  background-color: @secondary-color;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+}
+.arrow-pointer {
+  text-wrap: nowrap;
+}
+
+@-webkit-keyframes width {
+  from {
+    width: 0%;
+  }
+}
 @keyframes slideInLotteryBackground {
   from {
     background-size: 0 100%;

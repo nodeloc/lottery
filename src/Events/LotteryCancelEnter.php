@@ -15,7 +15,7 @@ use Flarum\User\User;
 use Nodeloc\Lottery\Lottery;
 use Illuminate\Support\Collection;
 
-class LotteryEnterChanged
+class LotteryCancelEnter
 {
     /**
      * @var User
@@ -30,26 +30,26 @@ class LotteryEnterChanged
     /**
      * @var Collection
      */
-    public $unvotedOptionIds;
+    public $unenterdOptionIds;
 
     /**
      * @var Collection
      */
-    public $votedOptionIds;
+    public $enterdOptionIds;
 
     /**
      * LotteryWasCreated constructor.
      *
      * @param User       $actor
      * @param Lottery       $lottery
-     * @param Collection $unvotedOptionIds
-     * @param Collection $votedOptionIds
+     * @param Collection $unenterdOptionIds
+     * @param Collection $enterdOptionIds
      */
-    public function __construct(User $actor, Lottery $lottery, Collection $unvotedOptionIds, Collection $votedOptionIds)
+    public function __construct(User $actor, Lottery $lottery, Collection $unenterdOptionIds, Collection $enterdOptionIds)
     {
         $this->actor = $actor;
         $this->lottery = $lottery;
-        $this->unvotedOptionIds = $unvotedOptionIds;
-        $this->votedOptionIds = $votedOptionIds;
+        $this->unenterdOptionIds = $unenterdOptionIds;
+        $this->enterdOptionIds = $enterdOptionIds;
     }
 }

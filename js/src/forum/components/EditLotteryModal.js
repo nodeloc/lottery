@@ -33,7 +33,6 @@ export default class EditLotteryModal extends CreateLotteryModal {
   }
 
   displayOptions() {
-    console.log('options',this.options);
     return this.options.map((options, i) => (
         <div className="Form-group MinMaxSelector">
           <fieldset className="MinMaxSelector--inputs">
@@ -81,6 +80,7 @@ export default class EditLotteryModal extends CreateLotteryModal {
       this.operator_type.push(Stream(''));
       this.operator.push(Stream(''));
       this.operator_value.push(Stream(''));
+      this.displayOptions();
     } else {
       alert(extractText(app.translator.trans('nodeloc-lottery.forum.modal.max', {max})));
     }

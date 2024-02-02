@@ -36,7 +36,6 @@ class LotteryOptionSerializer extends AbstractSerializer
             'operator_value'    => $option->operator_value,
             'createdAt'   => $this->formatDate($option->created_at),
             'updatedAt'   => $this->formatDate($option->updated_at),
-            'voteCount'   => $this->actor->can('seeLotteryCount', $option->lottery) ? (int) $option->vote_count : null,
         ];
 
         return $attributes;

@@ -11,7 +11,7 @@ export default class Lottery extends Model {
   max_participants = Model.attribute('max_participants');
 
   enterCount = Model.attribute('enter_count');
-
+  status = Model.attribute('status');
   canEnter = Model.attribute('canEnter');
   canEdit = Model.attribute('canEdit');
   canDelete = Model.attribute('canDelete');

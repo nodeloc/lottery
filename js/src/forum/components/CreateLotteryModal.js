@@ -12,9 +12,9 @@ export default class CreateLotteryModal extends Modal {
   oninit(vnode) {
     super.oninit(vnode);
 
-    this.operator_type = [Stream('money')];
+    this.operator_type = [Stream('discussions_started')];
     this.operator = [Stream('1')];
-    this.operator_value = [Stream('100')];
+    this.operator_value = [Stream('1')];
 
     this.prizes = Stream('');
     this.price = Stream('');
@@ -257,9 +257,9 @@ export default class CreateLotteryModal extends Modal {
     const max = 5;
 
     if (this.operator_value.length < max) {
-      this.operator_type.push(Stream(''));
+      this.operator_type.push(Stream('money'));
       this.operator.push(Stream('1'));
-      this.operator_value.push(Stream(''));
+      this.operator_value.push(Stream('1'));
     } else {
       alert(extractText(app.translator.trans('nodeloc-lottery.forum.modal.max', {max})));
     }

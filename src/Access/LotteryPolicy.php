@@ -17,20 +17,10 @@ use Nodeloc\Lottery\Lottery;
 
 class LotteryPolicy extends AbstractPolicy
 {
-    public function seeLotteryCount(User $actor, Lottery $lottery)
-    {
-        if ($lottery->hide_votes && $lottery->end_date && !$lottery->hasEnded()) {
-            return $this->deny();
-        }
-
-        if ($lottery->lottery_participants($actor)->count() || $actor->can('lottery.viewResultsWithoutVoting', $lottery->post->discussion)) {
-            return $this->allow();
-        }
-    }
 
     public function seeParticipants(User $actor, Lottery $lottery)
     {
-        if (!$actor->can('seeLotteryCount', $lottery)) {
+        if (!$actor->hasPermission('lottery.seeParticipants')) {
             return $this->deny();
         }
 
@@ -55,7 +45,7 @@ class LotteryPolicy extends AbstractPolicy
 
     public function cancelEnter(User $actor, Lottery $lottery)
     {
-        if ($lottery->allow_change_vote && $actor->hasPermission('lottery.cancelEnter')) {
+        if ($lottery->allow_cancel_enter && $actor->hasPermission('lottery.cancelEnter')) {
             return $this->allow();
         }
     }

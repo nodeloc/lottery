@@ -24,8 +24,8 @@ app.initializers.add('nodeloc/lottery', () => {
     .registerPermission(
       {
         icon: 'fas fa-signal',
-        label: app.translator.trans('nodeloc-lottery.admin.permissions.view_results_without_Enter'),
-        permission: 'discussion.lottery.viewResultsWithoutEnter',
+        label: app.translator.trans('nodeloc-lottery.admin.permissions.seeParticipants'),
+        permission: 'lottery.seeParticipants',
         allowGuest: true,
       },
       'view'

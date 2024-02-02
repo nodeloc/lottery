@@ -33,6 +33,7 @@ class LotteryParticipantsSerializer extends AbstractSerializer
     {
         return [
             'lotteryId'    => $participants->lottery_id,
+            'status'      =>$participants->status,
             'createdAt' => $this->formatDate($participants->created_at),
             'updatedAt' => $this->formatDate($participants->updated_at),
         ];

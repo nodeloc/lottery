@@ -24,7 +24,7 @@ export default class ListLotteryModal extends Modal {
   }
 
   title() {
-    return app.translator.trans('nodeloc-lottery.forum.participants_modal.title');
+    return app.translator.trans('nodeloc-lottery.forum.participants_modal.title' + (this.attrs.lottery.hasEnded() ? '_winners':''));
   }
 
   content() {
@@ -33,10 +33,8 @@ export default class ListLotteryModal extends Modal {
 
   optionContent() {
     const participants = this.attrs.lottery.participants();
-
     return (
         <div className="VotesModal-option">
-          <h2>Participants:</h2>
           {participants.length ? (
               <div className="VotesModal-list">{participants.map(this.participantsContent.bind(this))}</div>
           ) : (
@@ -45,9 +43,12 @@ export default class ListLotteryModal extends Modal {
         </div>
     );
   }
-
   participantsContent(participants) {
     const user = participants.user();
+    // 只在 hasEnded 为 true 时显示 status=1 的用户
+    if (this.attrs.lottery.hasEnded() && participants.status() !== 1) {
+      return null;
+    }
     const attrs = user && { href: app.route.user(user) };
 
     return (
