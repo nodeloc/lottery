@@ -39,7 +39,7 @@
             "category": "discussion",
             "icon": {
                 "name": "fas fa-gift",
-                "backgroundColor": "#e74c3c",
+                "backgroundColor": "#006633",
                 "color": "#fff"
             }
         },

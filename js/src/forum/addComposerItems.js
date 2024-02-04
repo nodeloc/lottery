@@ -41,5 +41,4 @@ export const addToComposer = (composer) => {
 
 export default () => {
   addToComposer(DiscussionComposer);
-  addToComposer(ReplyComposer);
 };

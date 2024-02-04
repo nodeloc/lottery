@@ -15,9 +15,9 @@ nodeloc-lottery:
       moderate: Edit & remove lotterys
 
   forum:
-    days_remaining: {time} 后开奖.
+    days_remaining: 于 {time} 后开奖.
     no_permission: 你无权参与
-    lottery_ended: 抽奖活动已结束
+    lottery_ended: 抽奖已结束
     public_lottery: 查看参与者
     max_votes_allowed: "lottery allows voting for {max, plural, one {# option} other {# options}}."
     widget-title: 抽奖结果揭晓于...
@@ -25,7 +25,7 @@ nodeloc-lottery:
     hours: Hours
     minutes: Minutes
     seconds: Seconds
-    endDateText: 抽奖活动已结束!
+    endDateText: 抽奖已结束
     hurry_up: 好事将近!! 距离开奖还有...
     had_enter: 您已经参与此活动.
     too_many_participants: 人数爆满，没有名额了
@@ -43,8 +43,8 @@ nodeloc-lottery:
     modal:
       add_title: 发布抽奖
       lottery_placeholder: 奖品
-      price: 费用(参与此活动需要消耗的能量)
-      amount: 数量(奖品总数量)
+      price: 能量消耗
+      amount: 奖品数量
       min_participants: 最少人数
       max_participants: 最多人数
       add_option_label: Add an Option

@@ -55,11 +55,14 @@ export default class PostLottery extends Component {
         <div>
           <div className="PrizeInfo">
             <div className="PrizeDetails">
-              <div>{app.translator.trans('nodeloc-lottery.forum.modal.lottery_placeholder')}: {lottery.prizes()}</div>
-              <div>{app.translator.trans('nodeloc-lottery.forum.modal.amount')}: {lottery.amount()}</div>
-              <div>{app.translator.trans('nodeloc-lottery.forum.modal.price')}: {lottery.price()}</div>
-              {lottery.min_participants()!==0 &&(<div>{app.translator.trans('nodeloc-lottery.forum.modal.min_participants')}: {lottery.min_participants()}</div>)}
-              {lottery.max_participants()<9999 &&(<div>{app.translator.trans('nodeloc-lottery.forum.modal.max_participants')}: {lottery.max_participants()}</div>)}
+              <span class='amount'>{app.translator.trans('nodeloc-lottery.forum.modal.amount')} </span>
+              <span>{lottery.amount()}</span>
+              <span class='price'>{app.translator.trans('nodeloc-lottery.forum.modal.price')}</span>
+              <span>{lottery.price()}</span>
+              {lottery.min_participants()!==0 &&(<>
+                <span class='min_participants'>{app.translator.trans('nodeloc-lottery.forum.modal.min_participants')}</span><span>{lottery.min_participants()}</span></>)}
+              {lottery.max_participants()<9999 &&(<>
+                <span class='min_participants'>{app.translator.trans('nodeloc-lottery.forum.modal.max_participants')}</span><span>{lottery.max_participants()}</span></>)}
             </div>
             <EventCountDown endDate={endDate} />
           </div>
@@ -68,14 +71,14 @@ export default class PostLottery extends Component {
                 lottery.min_participants() > 0 && lottery.enterCount() && m('.arrow', [
                   m('.arrow-status', {
                     style: {
-                      width: (lottery.enterCount() / lottery.min_participants()) * 100 + '%'
+                      width: (lottery.enterCount() > lottery.min_participants()) ? '100%' : ((lottery.enterCount() / lottery.min_participants()) * 100 + '%')
                     }
                   }, [
                     m('span.arrow-pointer', '已有' + lottery.enterCount() + '人 / 最低' + lottery.min_participants() + '人')
                   ])
                 ])
             }
-            <h2 class="event-text"><i class='fas fa-info-circle fontawicon'></i> {app.translator.trans('nodeloc-lottery.forum.modal.options_label')}</h2>
+            <h2><i class='fas fa-info-circle fontawicon'></i> {app.translator.trans('nodeloc-lottery.forum.modal.options_label')}</h2>
             <ul>
             {options.map(this.viewOption.bind(this))}
             </ul>

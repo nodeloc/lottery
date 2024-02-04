@@ -80,7 +80,6 @@ export default class CreateLotteryModal extends Modal {
       <div className="Form-group">
         <label
           className="label">{app.translator.trans('nodeloc-lottery.forum.modal.lottery_placeholder')}</label>
-
         <input type="text" name="prizes" className="FormControl" bidi={this.prizes}/>
       </div>,
       100

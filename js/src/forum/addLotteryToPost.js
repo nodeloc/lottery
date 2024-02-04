@@ -17,46 +17,4 @@ export default () => {
       }
     }
   });
-
-  extend(DiscussionPage.prototype, 'oncreate', function () {
-    if (app.pusher) {
-      app.pusher.then((binding) => {
-        // We will listen for updates to all lottery and options
-        // Even if that model is not in the current discussion, it doesn't really matter
-        binding.channels.main.bind('updatedLotteryOptions', (data) => {
-          const lottery = app.store.getById('lottery', data['lotteryId']);
-
-          if (lottery) {
-            lottery.pushAttributes({
-              voteCount: data['lotteryVoteCount'],
-            });
-
-            // Not redrawing here, as the option below should trigger the redraw already
-          }
-
-          const changedOptions = data['options'];
-
-          for (const optionId in changedOptions) {
-            const option = app.store.getById('lottery_options', optionId);
-
-            if (option && option.voteCount() !== undefined) {
-              option.pushAttributes({
-                voteCount: changedOptions[optionId],
-              });
-            }
-          }
-
-          m.redraw();
-        });
-      });
-    }
-  });
-
-  extend(DiscussionPage.prototype, 'onremove', function () {
-    if (app.pusher) {
-      app.pusher.then((binding) => {
-        binding.channels.main.unbind('updatedLotteryOptions');
-      });
-    }
-  });
 };

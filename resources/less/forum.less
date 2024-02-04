@@ -26,6 +26,7 @@
 }
 
 .countdown-container {
+  opacity: 0.68;
   #clockdiv {
     font-family: Helvetica, sans-serif ;
     color: #fff;
@@ -45,7 +46,7 @@
   #clockdiv div > span {
     padding: 15px;
     border-radius: 3px;
-    background: @primary-color;
+    background: #333;
     display: inline-block;
   }
 
@@ -56,7 +57,7 @@
   .smalltext {
     padding-top: 5px;
     font-size: 16px;
-    color: @primary-color;
+    color: #fff;
   }
 
   .cntdwn-widget {
@@ -70,12 +71,12 @@
 }
 
 .event-text {
-  color: @primary-color;
+  color: #fff;
 }
 
 h2.event-text {
   margin-bottom: 1px;
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 /*@media screen and (max-width: 1099px) {
@@ -221,7 +222,6 @@ h2.event-text {
 
   .LotteryOptions {
     display: block;
-    margin-left: 15px;
     border: 1px solid @primary-color;
     padding: 20px;
     color: @primary-color;
@@ -244,25 +244,40 @@ h2.event-text {
   }
   .PrizeInfo{
     display: block;
-    margin-left: 15px;
     border: 1px solid @primary-color;
-    background-color: #FFCCCC;
     padding: 20px;
+    background: linear-gradient(rgba(28, 28, 28, 0.5), rgba(0, 0, 0, 0.5)), url(/assets/covers/lottery_bg.png) repeat;
     background-size: cover;
-    background-image: url(/assets/covers/lottery_bg.png);
-    background-color: rgba(255,255,255,0.5);
 
     .PrizeDetails{
       color:@primary-color;
-      font-size: 14px;
-      font-weight: bold;
+      font-size: 12px;
+      margin-bottom: 20px;
+      .amount{
+        background-color: #dafad7;
+      }
+      .price{
+        background-color: #ffffcb;
+      }
+      .min_participants{
+        background-color: #ebf8ff;
+      }
+      .max_participants{
+        background-color: #aeffff;
+      }
+      span{
+        padding: 5px;
+        background-color: #f3f3f3;
+        opacity: 0.8;
+      }
     }
+
   }
+
   .Lottery-sticky {
     position: sticky;
     bottom: 0;
     padding: 10px 0;
-    margin-left: 15px;
     margin-top: 10px;
     display: flex;
     align-items: flex-start;
@@ -455,7 +470,7 @@ h2.event-text {
   }
 }
 
-.VotesModal {
+.ParticipantsModal {
   &-list {
     display: grid;
     grid: auto-flow / repeat(auto-fill, minmax(150px, 1fr));
@@ -535,7 +550,7 @@ h2.event-text {
   border-top-left-radius: 5px;
 }
 .arrow-pointer {
-  text-wrap: nowrap;
+  white-space: nowrap;
 }
 
 @-webkit-keyframes width {

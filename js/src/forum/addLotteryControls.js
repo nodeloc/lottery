@@ -20,7 +20,7 @@ export default () => {
             },
             {
               data: {
-                include: 'options,lottery_participants,lottery_participants.option',
+                include: 'options,lottery_participants',
               },
             }
           )
@@ -30,14 +30,14 @@ export default () => {
           }),
     });
 
-  extend(PostControls, 'moderationControls', function (items, post) {
-    if (!post.isHidden() && post.canStartLottery()) {
-      items.add(
-        'addLottery',
-        <Button icon="fas fa-lottery" onclick={createLottery.bind(this, post)}>
-          {app.translator.trans('nodeloc-lottery.forum.moderation.add')}
-        </Button>
-      );
-    }
-  });
+  // extend(PostControls, 'moderationControls', function (items, post) {
+  //   if (!post.isHidden() && post.canStartLottery()) {
+  //     items.add(
+  //       'addLottery',
+  //       <Button icon="fas fa-lottery" onclick={createLottery.bind(this, post)}>
+  //         {app.translator.trans('nodeloc-lottery.forum.moderation.add')}
+  //       </Button>
+  //     );
+  //   }
+  // });
 };
