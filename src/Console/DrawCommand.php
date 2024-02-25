@@ -56,6 +56,15 @@ class DrawCommand extends Command
                     $minParticipants = $lottery->min_participants;
 
                     if ($participantsCount >= $minParticipants) {
+                        // 计算参与金额总数
+                        $totalEntranceFee = $participantsCount * $lottery->price;
+
+                        // 扣除参与金额
+                        $participants = $lottery->participants()->get();
+                        foreach ($participants as $participant) {
+                            $participant->user->decrement('money', $lottery->price);
+                        }
+
                         // 人数达到了，将抽奖帖状态设置为1 (status = 1)
                         $lottery->update(['status' => 1]);
 
@@ -67,6 +76,10 @@ class DrawCommand extends Command
 
                         $winnerIds = $winners->pluck('id');
                         $lottery->participants()->whereIn('id', $winnerIds)->update(['status' => 1]);
+                        // 给抽奖发起者加上参与金额
+                        $lottery->user->increment('money', $totalEntranceFee);
+
+
                         $d = Discussion::where('first_post_id', $lottery->post_id)->first();
                         //通知发布抽奖帖用户
                         $this->notifications->sync(new DrawLotteryBlueprint($d),[$d->user]);

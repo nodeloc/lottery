@@ -39,6 +39,7 @@ nodeloc-lottery:
       edit_lottery: => nodeloc-lottery.forum.moderation.edit
       no_permission_alert: You do not have permission to start a lottery.
       in_queue_alert: You had enter the lottery.
+      no_post_in_discussion_alert: You haven't reply the discussion.
 
     modal:
       add_title: Add a lottery

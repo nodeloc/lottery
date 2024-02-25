@@ -39,6 +39,7 @@ nodeloc-lottery:
       edit_lottery: => nodeloc-lottery.forum.moderation.edit
       no_permission_alert: 您无权发布抽奖帖.
       in_queue_alert: 您已经参与了此抽奖.
+      no_post_in_discussion_alert: 参与抽奖请先回复主题答谢抽奖发起者.
 
     modal:
       add_title: 发布抽奖

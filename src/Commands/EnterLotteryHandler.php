@@ -98,6 +98,18 @@ class EnterLotteryHandler
             ]);
         }
 
+        // 检查用户是否在对应主题回帖
+        $discussionId = $lottery->post->discussion_id;
+        $userPostedInDiscussion = $actor->posts()
+            ->where('discussion_id', $discussionId)
+            ->exists();
+
+        if (!$userPostedInDiscussion) {
+            throw new ValidationException([
+                'lottery' => $this->translator->trans('nodeloc-lottery.forum.composer_discussion.no_post_in_discussion_alert'),
+            ]);
+        }
+
         if($lottery->getAttribute('enter_count')>$lottery->getAttribute('max_participants')){
             throw new ValidationException([
                 'lottery' => $this->translator->trans('nodeloc-lottery.forum.too_many_participants'),
@@ -119,7 +131,8 @@ class EnterLotteryHandler
 
         $this->db->transaction(function () use ($lottery, $actor) {
             // 减少用户的 money
-            $actor->decrement('money', $lottery->getAttribute('price'));
+            // 报名不扣钱
+            //$actor->decrement('money', $lottery->getAttribute('price'));
             $participants = $lottery->participants()->create([
                 'user_id' => $actor->id,
             ]);
