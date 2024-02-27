@@ -7,7 +7,7 @@ import Discussion from 'flarum/common/models/Discussion';
 
 export default () => {
   extend(DiscussionList.prototype, 'requestParams', (params) => {
-    params.include.push('lottery');
+    params.include.push('firstPost.lottery');
   });
 
   extend(Discussion.prototype, 'badges', function (badges) {

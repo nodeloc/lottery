@@ -5,19 +5,17 @@ namespace Nodeloc\Lottery\Notification;
 use Flarum\Discussion\Discussion;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\MailableInterface;
+use Nodeloc\Lottery\Api\Serializers\DrawLotterySerializer;
+use Nodeloc\Lottery\Lottery;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Flarum\User\User;
 
-
-class DrawLotteryBlueprint implements BlueprintInterface, MailableInterface
+class FailLotteryBlueprint implements BlueprintInterface, MailableInterface
 {
     public $discussion;
-    public $actor;
 
-    public function __construct(Discussion $discussion, User $actor)
+    public function __construct(Discussion $discussion)
     {
         $this->discussion = $discussion;
-        $this->actor = $actor;
     }
 
     /**
@@ -50,7 +48,7 @@ class DrawLotteryBlueprint implements BlueprintInterface, MailableInterface
      */
     public static function getType()
     {
-        return 'drawLottery';
+        return 'failLottery';
     }
 
     /**
@@ -70,7 +68,7 @@ class DrawLotteryBlueprint implements BlueprintInterface, MailableInterface
      */
     public function getEmailView()
     {
-        return ['text' => 'nodeloc-lottery::emails.drawLottery'];
+        return ['text' => 'nodeloc-lottery::emails.failLottery'];
     }
 
     /**

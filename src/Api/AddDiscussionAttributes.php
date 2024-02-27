@@ -18,7 +18,7 @@ class AddDiscussionAttributes
 {
     public function __invoke(DiscussionSerializer $serializer, Discussion $discussion, array $attributes): array
     {
-        $attributes['hasLottery'] = $discussion->lottery()->exists();
+        $attributes['hasLottery'] = $discussion->is_lottery;
         $attributes['canStartLottery'] = $serializer->getActor()->can('lottery.start', $discussion);
 
         return $attributes;

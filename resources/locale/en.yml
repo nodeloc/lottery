@@ -92,7 +92,34 @@ nodeloc-lottery:
     participants_modal:
       title: Participants
       title_winners: Winners
+      lottery_canceled: Canceled for not enough participants.
+
+    notification:
+      drawLottery: Congratulations, You win the lottery.
+      fail: The lottery is failed for not enough participants.
+      finish: Success lottery, Please sent to winners.
 
   email:
     subject:
-      drawLottery: Draw lottery notification
+      drawLottery: Draw lottery notification {discussion_title}
+    body:
+      drawLottery: |
+        Hey {recipient_display_name},
+
+        Congratulations, You win the {discussion_title} from {actor_display_name} .
+
+        View it here: {discussion_url}
+      fail: |
+        Hey {recipient_display_name},
+
+        Sorry for the {discussion_title} is failed for not enough participants.
+
+        Check it out: {discussion_url}
+      finish: |
+        Hey {recipient_display_name},
+
+        Congratulations! the lottery is success finish.
+
+        Visit the discussion here: {discussion_url}, and finish the lottery.
+
+        Thanks!

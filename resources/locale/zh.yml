@@ -92,7 +92,37 @@ nodeloc-lottery:
     participants_modal:
       title: 参与者
       title_winners: 中奖者
+      lottery_canceled: 参与人数不足抽奖取消！
+
+    notification:
+      drawLottery: 恭喜您中奖了！请联系抽奖发起者索取奖品.
+      fail: 很抱歉，因人数不足抽奖以失败而告终.
+      finish: 抽奖活动圆满成功，请联系中奖者发送奖品。
 
   email:
     subject:
-      drawLottery: 抽奖通知
+      drawLottery: 抽奖通知 {discussion_title}
+    body:
+      drawLottery: |
+        你好 {recipient_display_name},
+
+        恭喜您中奖了！ {discussion_title} 来自 {actor_display_name} .
+
+        访问链接查看详情: {discussion_url} .
+
+        请联系 {actor_display_name} 领取您的奖品.
+      fail: |
+        您好 {recipient_display_name},
+
+        很抱歉，您发起的抽奖 {discussion_title} 由于人数不足而取消.
+
+        详情请查看: {discussion_url}
+      finish: |
+        您好 {recipient_display_name},
+
+        恭喜您! 您发起的抽奖 {discussion_title} 圆满成功！
+
+        访问: {discussion_url} 给幸运儿们发放奖品吧.
+
+        诚挚感谢!
+

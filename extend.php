@@ -12,10 +12,12 @@
 namespace Nodeloc\Lottery;
 
 use Flarum\Api\Controller;
+use Flarum\Api\Serializer;
 use Flarum\Api\Serializer\DiscussionSerializer;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Api\Serializer\PostSerializer;
 use Flarum\Discussion\Discussion;
+use Flarum\Discussion\Event\Saving;
 use Flarum\Extend;
 use Flarum\Post\Event\Saving as PostSaving;
 use Flarum\Post\Post;
@@ -33,7 +35,8 @@ return [
         ->css(__DIR__.'/resources/less/admin.less'),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
-
+    (new Extend\View())
+        ->namespace('nodeloc-lottery', __DIR__.'/views'),
     (new Extend\Routes('api'))
         ->post('/nodeloc/lottery', 'nodeloc.lottery.create', Controllers\CreateLotteryController::class)
         ->get('/nodeloc/lottery/{id}', 'nodeloc.lottery.show', Controllers\ShowLotteryController::class)
@@ -42,12 +45,13 @@ return [
         ->patch('/nodeloc/lottery/{id}/enter', 'nodeloc.lottery.enter', Controllers\EnterLotteryController::class),
 
     (new Extend\Model(Post::class))
-        ->hasMany('lottery', Lottery::class, 'post_id', 'id'),
+        ->hasOne('lottery', Lottery::class, 'post_id', 'id'),
 
     (new Extend\Model(Discussion::class))
-        ->hasMany('lottery', Lottery::class, 'post_id', 'first_post_id'),
+        ->hasOne('lottery', Lottery::class, 'post_id', 'first_post_id'),
 
     (new Extend\Event())
+        ->listen(Saving::class,Listeners\SaveLotteryToDiscussion::class)
         ->listen(PostSaving::class, Listeners\SaveLotteryToDatabase::class)
         ->listen(SettingsSaved::class, Listeners\ClearFormatterCache::class),
 
@@ -55,7 +59,7 @@ return [
         ->attributes(Api\AddDiscussionAttributes::class),
 
     (new Extend\ApiSerializer(PostSerializer::class))
-        ->hasMany('lottery', LotterySerializer::class)
+        ->hasOne('lottery', LotterySerializer::class)
         ->attributes(Api\AddPostAttributes::class),
 
     (new Extend\ApiSerializer(ForumSerializer::class))
@@ -102,7 +106,10 @@ return [
         ->registerLessConfigVar('nodeloc-lottery-options-color-blend', 'nodeloc-lottery.optionsColorBlend', function ($value) {
             return $value ? 'true' : 'false';
         }),
-
+    (new Extend\Notification())
+    ->type(Notification\DrawLotteryBlueprint::class, Serializer\BasicDiscussionSerializer::class, ['alert', 'email'])
+    ->type(Notification\FailLotteryBlueprint::class, Serializer\BasicDiscussionSerializer::class, ['alert', 'email'])
+    ->type(Notification\FinishLotteryBlueprint::class, Serializer\BasicDiscussionSerializer::class, ['alert', 'email']),
     (new Extend\ModelVisibility(Lottery::class))
         ->scope(Access\ScopeLotteryVisibility::class),
 ];

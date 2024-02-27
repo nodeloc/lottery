@@ -33,22 +33,63 @@ export default class ListLotteryModal extends Modal {
 
   optionContent() {
     const participants = this.attrs.lottery.participants();
-    return (
-        <div className="ParticipantsModal-option">
-          {participants.length ? (
-              <div className="ParticipantsModal-list">{participants.map(this.participantsContent.bind(this))}</div>
-          ) : (
-              <h4>{app.translator.trans('nodeloc-lottery.forum.modal.no_participants')}</h4>
-          )}
-        </div>
-    );
-  }
-  participantsContent(participants) {
+
+    // 如果抽奖已经结束，显示获奖者
+    if (this.attrs.lottery.hasEnded()) {
+        return (
+            <div>
+              <h2>{this.attrs.lottery.status() ==1 ?app.translator.trans('nodeloc-lottery.forum.participants_modal.title_winners'):app.translator.trans('nodeloc-lottery.forum.participants_modal.lottery_canceled')}</h2>
+              <div className="ParticipantsModal-option">
+                  {participants.length ? (
+                      <div className="ParticipantsModal-list">{participants.map(this.winnerContent.bind(this))}</div>
+                  ) : (
+                      <h4>{app.translator.trans('nodeloc-lottery.forum.modal.no_participants')}</h4>
+                  )}
+              </div>
+              <h2>{app.translator.trans('nodeloc-lottery.forum.participants_modal.title')}</h2>
+              <div className="ParticipantsModal-option">
+                  {participants.length ? (
+                      <div className="ParticipantsModal-list">{participants.map(this.participantsContent.bind(this))}</div>
+                  ) : (
+                      <h4>{app.translator.trans('nodeloc-lottery.forum.modal.no_participants')}</h4>
+                  )}
+              </div>
+            </div>
+        );
+    } else { // 抽奖未结束，显示参与者
+        return (
+            <div>
+                <h2>{app.translator.trans('nodeloc-lottery.forum.participants_modal.title')}</h2>
+                <div className="ParticipantsModal-option">
+                    {participants.length ? (
+                        <div className="ParticipantsModal-list">{participants.map(this.participantsContent.bind(this))}</div>
+                    ) : (
+                        <h4>{app.translator.trans('nodeloc-lottery.forum.modal.no_participants')}</h4>
+                    )}
+                </div>
+            </div>
+        );
+    }
+}
+
+
+  winnerContent(participants) {
     const user = participants.user();
     // 只在 hasEnded 为 true 时显示 status=1 的用户
     if (this.attrs.lottery.hasEnded() && participants.status() !== 1) {
-      return null;
+      return '';
     }
+    const attrs = user && { href: app.route.user(user) };
+
+    return (
+      <Link {...attrs}>
+        {avatar(user)} {username(user)}
+      </Link>
+    );
+  }
+
+  participantsContent(participants) {
+    const user = participants.user();
     const attrs = user && { href: app.route.user(user) };
 
     return (

@@ -10,11 +10,9 @@ export default () => {
     const post = this.attrs.post;
 
     if ((!post.isHidden() || this.revealContent) && post.lottery()) {
-      for (const lottery of post.lottery()) {
-        if (lottery) {
-          content.push(<PostLottery post={post} lottery={lottery} />);
+        if (post.lottery()) {
+          content.push(<PostLottery post={post} lottery={post.lottery()} />);
         }
-      }
     }
   });
 };

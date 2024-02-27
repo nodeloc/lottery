@@ -16,7 +16,8 @@ use Nodeloc\Lottery\Lottery;
 use Nodeloc\Lottery\Notification\DrawLotteryBlueprint;
 use UnexpectedValueException;
 use Flarum\Notification\NotificationSyncer;
-
+use Nodeloc\Lottery\Notification\FailLotteryBlueprint;
+use Nodeloc\Lottery\Notification\FinishLotteryBlueprint;
 
 class DrawCommand extends Command
 {
@@ -37,13 +38,11 @@ class DrawCommand extends Command
     public function __construct(SettingsRepositoryInterface $settings, NotificationSyncer $notifications)
     {
         parent::__construct();
-
         $this->settings = $settings;
         $this->notifications = $notifications;
     }
     public function handle()
     {
-        echo( ' Start draw.');
         // 查询所有状态为0的抽奖帖
         $lotteries = Lottery::where('status', 0)->get();
         foreach ($lotteries as $lottery) {
@@ -79,18 +78,23 @@ class DrawCommand extends Command
                         // 给抽奖发起者加上参与金额
                         $lottery->user->increment('money', $totalEntranceFee);
 
-
                         $d = Discussion::where('first_post_id', $lottery->post_id)->first();
+
                         //通知发布抽奖帖用户
-                        $this->notifications->sync(new DrawLotteryBlueprint($d),[$d->user]);
-                        $this->notifications->sync( new DrawLotteryBlueprint($d), [$winnerIds]);
+                        $this->notifications->sync(new FinishLotteryBlueprint($d),[$d->user]);
+
+                        // Send notifications to other participants of the discussion
+                        $recipientsBuilder = User::whereIn('id',$winners->pluck('user_id'));
+                        $recipients = $recipientsBuilder
+                            ->get();
+                        $this->notifications->sync( new DrawLotteryBlueprint($d,$d->user), $recipients->all());
 
                         $this->info($lottery->id . ' drawn successfully.');
                     } else {
                         // 人数不足，将抽奖状态设为2 (status = 2)
                         $lottery->update(['status' => 2]);
                         $d = Discussion::where('first_post_id', $lottery->post_id)->first();
-                        $this->notifications->sync(new DrawLotteryBlueprint($d),[$d->user]);
+                        $this->notifications->sync(new FailLotteryBlueprint($d),[$d->user]);
                         $this->info( $lottery->id . ' canceled due to insufficient participants.');
                     }
                 }
