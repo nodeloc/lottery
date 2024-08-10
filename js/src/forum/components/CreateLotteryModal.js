@@ -206,6 +206,7 @@ export default class CreateLotteryModal extends Modal {
     //moderator_strikes: app.translator.trans('nodeloc-lottery.forum.modal.moderator_strikes'),
     money: app.translator.trans('nodeloc-lottery.forum.modal.money'),
     lotteries_made: app.translator.trans('nodeloc-lottery.forum.modal.lotteries_made'),
+    read_permission: app.translator.trans('nodeloc-lottery.forum.modal.read_permission'),
   };
 
   displayOptions() {
@@ -221,7 +222,7 @@ export default class CreateLotteryModal extends Modal {
                 //m.redraw();  // 手动调用 redraw
               },
             })}
-            <i aria-hidden="true" class="icon fas fa-sort Select-caret"></i></span>
+            </span>
           <button class="Button hasIcon" type="button"
                   onclick={() => this.operator[i](this.operator[i]() === 0 ? 1 : 0)}>
             {this.operator[i]() === 0 ? (

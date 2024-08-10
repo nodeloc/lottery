@@ -50,6 +50,8 @@ class EnterLotteryHandler
      */
     private $validation;
 
+    private $translator;
+
     /**
      * @var ConnectionResolverInterface
      */
@@ -183,6 +185,14 @@ class EnterLotteryHandler
                 return $user->getAttribute('money');
             case 'lotteries_made':
                 return Lottery::where('user_id', $user->id)->count();
+            case 'read_permission':
+                if($user->groups()->count() > 0)
+                {
+                    $group = $user->groups()->orderBy('read_permission','desc')->first();
+                    return $group->read_permission;
+                }else{
+                    return 0;
+                }
             default:
                 return 0; // 默认情况下为零
         }

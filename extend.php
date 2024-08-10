@@ -69,11 +69,11 @@ return [
         ->addOptionalInclude(['firstPost.lottery']),
 
     (new Extend\ApiController(Controller\ShowDiscussionController::class))
-        ->addInclude(['posts.lottery', 'posts.lottery.options', 'posts.lottery.lottery_participants', 'posts.lottery.lottery_participants.option'])
+        ->addInclude(['posts.lottery', 'posts.lottery.options', 'posts.lottery.lottery_participants'])
         ->addOptionalInclude(['posts.lottery.participants', 'posts.lottery.participants.user']),
 
     (new Extend\ApiController(Controller\CreateDiscussionController::class))
-        ->addInclude(['firstPost.lottery', 'firstPost.lottery.options', 'firstPost.lottery.lottery_participants', 'firstPost.lottery.lottery_participants.option'])
+        ->addInclude(['firstPost.lottery', 'firstPost.lottery.options', 'firstPost.lottery.lottery_participants'])
         ->addOptionalInclude(['firstPost.lottery.participants', 'firstPost.lottery.participants.user']),
 
     (new Extend\ApiController(Controller\CreatePostController::class))

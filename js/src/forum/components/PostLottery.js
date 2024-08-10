@@ -85,7 +85,7 @@ export default class PostLottery extends Component {
           </div>
           <div className="Lottery-sticky">
             {!infoItems.isEmpty() && <div className="helpText LotteryInfoText">{infoItems.toArray()}</div>}
-            {this.useSubmitUI && !hasEntered &&(
+            {this.useSubmitUI && !hasEntered && !lottery.hasEnded() &&(
               <Button className="Button Button--primary Lottery-submit" loading={this.loadingOptions} onclick={this.onsubmit.bind(this)}>
                 {app.translator.trans('nodeloc-lottery.forum.lottery.submit_button')}
               </Button>
@@ -141,6 +141,7 @@ export default class PostLottery extends Component {
     //likes_received: app.translator.trans('nodeloc-lottery.forum.modal.likes_received'),
     //best_answers: app.translator.trans('nodeloc-lottery.forum.modal.best_answers'),
     //moderator_strikes: app.translator.trans('nodeloc-lottery.forum.modal.moderator_strikes'),
+    read_permission: app.translator.trans('nodeloc-lottery.forum.modal.read_permission'),
     money: app.translator.trans('nodeloc-lottery.forum.modal.money'),
     lotteries_made: app.translator.trans('nodeloc-lottery.forum.modal.lotteries_made'),
   };

@@ -17,6 +17,10 @@ composer update nodeloc/lottery
 php flarum nodeloc:lottery:refresh
 ```
 
+### Schudle
+
+You must run `php flarum schudle:run` to draw the lottery.
+
 You can only run the command when the extension is enabled in the admin panel.
 
 ### Links
