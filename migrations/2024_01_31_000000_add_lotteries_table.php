@@ -21,7 +21,6 @@ return Migration::createTable('lotteries', function (Blueprint $table) {
     $table->integer('user_id')->unsigned()->nullable();
     $table->integer('vote_count')->unsigned();
     $table->integer('max_votes')->unsigned();
-    $table->integer('post_id')->unsigned();
 
     $table->boolean('allow_multiple_votes');
 
