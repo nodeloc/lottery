@@ -52,89 +52,117 @@ class DrawCommand extends Command
         $lotteries = Lottery::where('status', 0)->get();
         foreach ($lotteries as $lottery) {
             // 在事务中处理每一条抽奖
-                // 检查结束时间是否已经大于当前时间
-                $currentTime = Carbon::now();
-                if ($lottery->end_date->lt($currentTime)) {
-                    // 查询参与人数是否大于最少要求人数
-                    $participantsCount = $lottery->participants()->count();
-                    $minParticipants = $lottery->min_participants;
+            // 检查 $lottery->end_date 是否为 null
+            if ($lottery->end_date === null) {
+                $this->info($lottery->id . ' has null end_date.');
+                continue; // 跳过这个抽奖
+            }
+            // 检查结束时间是否已经大于当前时间
+            $currentTime = Carbon::now();
+            if ($lottery->end_date->lt($currentTime)) {
+                // 查询参与人数是否大于最少要求人数
+                $participantsCount = $lottery->participants()->count();
+                $minParticipants = $lottery->min_participants;
 
-                    if ($participantsCount >= $minParticipants) {
-                        // 计算参与金额总数
-                        $totalEntranceFee = $participantsCount * $lottery->price;
+                if ($participantsCount >= $minParticipants) {
+                    // 计算参与金额总数
+                    $totalEntranceFee = $participantsCount * $lottery->price;
 
-                        $source = 'LOTTERY_FEE';
-                        $sourceDesc = $this->translator->trans("antoinefr-money.forum.history.lottery-fee");
-                        // 扣除参与金额
-                        $participants = $lottery->participants()->get();
-                        foreach ($participants as $participant) {
-                            $participant->user->decrement('money', $lottery->price);
-                            $money =-$lottery->price;
-                            if ($money > 0 || $money < 0) {
-                                $userMoneyHistory = new UserMoneyHistory();
-                                $userMoneyHistory->user_id = $participant->user->id;
-                                $userMoneyHistory->type = $money > 0 ? "C" : "D";
-                                $userMoneyHistory->money = $money > 0 ? $money : -$money;
-                                $userMoneyHistory->source = $source;
-                                $userMoneyHistory->source_desc = $sourceDesc;
-                                $userMoneyHistory->balance_money = isset($participant->user->init_money) ?$participant->user->init_money : $participant->user->money - $money;
-                                $userMoneyHistory->last_money = $participant->user->money;
-                                $userMoneyHistory->create_user_id = isset($participant->user->create_user_id) ? $participant->user->create_user_id : $participant->user->id;
-                                $userMoneyHistory->change_time = Date("Y-m-d H:i:s");
-                                $userMoneyHistory->save();
-                            }
-                        }
-
-                        // 人数达到了，将抽奖帖状态设置为1 (status = 1)
-                        $lottery->update(['status' => 1]);
-
-                        // 更新中奖用户的状态
-                        $winners = $lottery->participants()
-                            ->inRandomOrder()
-                            ->limit($lottery->amount)
-                            ->get();
-
-                        $winnerIds = $winners->pluck('id');
-                        $lottery->participants()->whereIn('id', $winnerIds)->update(['status' => 1]);
-                        // 给抽奖发起者加上参与金额
-                        $lottery->user->increment('money', $totalEntranceFee);
-                        $source = 'LOTTERY_IN';
-                        $sourceDesc = $this->translator->trans("antoinefr-money.forum.history.lottery-in");
-                        $money =$totalEntranceFee;
+                    /*
+                    $source = 'LOTTERY_FEE';
+                    $sourceDesc = $this->translator->trans("antoinefr-money.forum.history.lottery-fee");
+                    // 扣除参与金额
+                    $participants = $lottery->participants()->get();
+                    foreach ($participants as $participant) {
+                        $participant->user->decrement('money', $lottery->price);
+                        $money =-$lottery->price;
                         if ($money > 0 || $money < 0) {
                             $userMoneyHistory = new UserMoneyHistory();
-                            $userMoneyHistory->user_id = $lottery->user->id;
+                            $userMoneyHistory->user_id = $participant->user->id;
                             $userMoneyHistory->type = $money > 0 ? "C" : "D";
                             $userMoneyHistory->money = $money > 0 ? $money : -$money;
                             $userMoneyHistory->source = $source;
                             $userMoneyHistory->source_desc = $sourceDesc;
-                            $userMoneyHistory->balance_money = isset($lottery->user->init_money) ?$lottery->user->init_money : $lottery->user->money - $money;
+                            $userMoneyHistory->balance_money = isset($participant->user->init_money) ?$participant->user->init_money : $participant->user->money - $money;
                             $userMoneyHistory->last_money = $participant->user->money;
-                            $userMoneyHistory->create_user_id = isset($lottery->user->create_user_id) ? $lottery->user->create_user_id : $lottery->user->id;
+                            $userMoneyHistory->create_user_id = isset($participant->user->create_user_id) ? $participant->user->create_user_id : $participant->user->id;
                             $userMoneyHistory->change_time = Date("Y-m-d H:i:s");
                             $userMoneyHistory->save();
                         }
+                    }*/
 
-                        $d = Discussion::where('first_post_id', $lottery->post_id)->first();
+                    // 人数达到了，将抽奖帖状态设置为1 (status = 1)
+                    $lottery->update(['status' => 1]);
 
-                        //通知发布抽奖帖用户
-                        $this->notifications->sync(new FinishLotteryBlueprint($d),[$d->user]);
-
-                        // Send notifications to other participants of the discussion
-                        $recipientsBuilder = User::whereIn('id',$winners->pluck('user_id'));
-                        $recipients = $recipientsBuilder
-                            ->get();
-                        $this->notifications->sync( new DrawLotteryBlueprint($d,$d->user), $recipients->all());
-
-                        $this->info($lottery->id . ' drawn successfully.');
-                    } else {
-                        // 人数不足，将抽奖状态设为2 (status = 2)
-                        $lottery->update(['status' => 2]);
-                        $d = Discussion::where('first_post_id', $lottery->post_id)->first();
-                        $this->notifications->sync(new FailLotteryBlueprint($d),[$d->user]);
-                        $this->info( $lottery->id . ' canceled due to insufficient participants.');
+                    // 更新中奖用户的状态
+                    $winners = $lottery->participants()
+                        ->inRandomOrder()
+                        ->limit($lottery->amount)
+                        ->get();
+                    $winnerIds = $winners->pluck('id');
+                    $lottery->participants()->whereIn('id', $winnerIds)->update(['status' => 1]);
+                    // 给抽奖发起者加上参与金额
+                    $lottery->user->increment('money', $totalEntranceFee);
+                    // 增加抽奖次数
+                    $lottery->user->increment('lottery_count', 1);
+                    $source = 'LOTTERY_IN';
+                    $sourceDesc = $this->translator->trans("antoinefr-money.forum.history.lottery-in");
+                    $money =$totalEntranceFee;
+                    if ($money > 0 || $money < 0) {
+                        $userMoneyHistory = new UserMoneyHistory();
+                        $userMoneyHistory->user_id = $lottery->user->id;
+                        $userMoneyHistory->type = $money > 0 ? "C" : "D";
+                        $userMoneyHistory->money = $money > 0 ? $money : -$money;
+                        $userMoneyHistory->source = $source;
+                        $userMoneyHistory->source_desc = $sourceDesc;
+                        $userMoneyHistory->balance_money = isset($lottery->user->init_money) ?$lottery->user->init_money : $lottery->user->money - $money;
+                        $userMoneyHistory->last_money = $lottery->user->money;
+                        $userMoneyHistory->create_user_id = isset($lottery->user->create_user_id) ? $lottery->user->create_user_id : $lottery->user->id;
+                        $userMoneyHistory->change_time = Date("Y-m-d H:i:s");
+                        $userMoneyHistory->save();
                     }
+
+                    $d = Discussion::where('first_post_id', $lottery->post_id)->first();
+
+                    //通知发布抽奖帖用户
+                    $this->notifications->sync(new FinishLotteryBlueprint($d),[$d->user]);
+
+                    // Send notifications to other participants of the discussion
+                    $recipientsBuilder = User::whereIn('id',$winners->pluck('user_id'));
+                    $recipients = $recipientsBuilder
+                        ->get();
+                    $this->notifications->sync( new DrawLotteryBlueprint($d,$d->user), $recipients->all());
+
+                    $this->info($lottery->id . ' drawn successfully.');
+                } else {
+                    // 人数不足，将抽奖状态设为2 (status = 2)
+                    $lottery->update(['status' => 2]);
+                    //所有参与用户返还金钱
+                    $source = 'LOTTERY_FEE_RETURN';
+                    $sourceDesc = $this->translator->trans("antoinefr-money.forum.history.lottery-fee-return");
+                    $participants = $lottery->participants()->get();
+                    foreach ($participants as $participant) {
+                        $participant->user->increment('money', $lottery->price);
+                        $money =$lottery->price;
+                        if ($money > 0 || $money < 0) {
+                            $userMoneyHistory = new UserMoneyHistory();
+                            $userMoneyHistory->user_id = $participant->user->id;
+                            $userMoneyHistory->type = $money > 0 ? "C" : "D";
+                            $userMoneyHistory->money = $money > 0 ? $money : -$money;
+                            $userMoneyHistory->source = $source;
+                            $userMoneyHistory->source_desc = $sourceDesc;
+                            $userMoneyHistory->balance_money = isset($participant->user->init_money) ?$participant->user->init_money : $participant->user->money - $money;
+                            $userMoneyHistory->last_money = $participant->user->money;
+                            $userMoneyHistory->create_user_id = isset($participant->user->create_user_id) ? $participant->user->create_user_id : $participant->user->id;
+                            $userMoneyHistory->change_time = Date("Y-m-d H:i:s");
+                            $userMoneyHistory->save();
+                        }
+                    }
+                    $d = Discussion::where('first_post_id', $lottery->post_id)->first();
+                    $this->notifications->sync(new FailLotteryBlueprint($d),[$d->user]);
+                    $this->info( $lottery->id . ' canceled due to insufficient participants.');
                 }
+            }
         }
 
         $this->info('Done.');

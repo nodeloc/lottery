@@ -310,7 +310,7 @@ export default class CreateLotteryModal extends Modal {
 
       return null;
     }
-    if (this.endDate() === '') {
+    if (!this.endDate() || this.endDate() === '') {
       alert(app.translator.trans('nodeloc-lottery.forum.modal.include_end_date'));
       return null;
     }

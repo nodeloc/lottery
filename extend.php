@@ -16,6 +16,8 @@ use Flarum\Api\Serializer;
 use Flarum\Api\Serializer\DiscussionSerializer;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Api\Serializer\PostSerializer;
+use Flarum\Api\Serializer\UserSerializer;
+use Flarum\User\User;
 use Flarum\Discussion\Discussion;
 use Flarum\Discussion\Event\Saving;
 use Flarum\Extend;
@@ -43,7 +45,8 @@ return [
         ->patch('/nodeloc/lottery/{id}', 'nodeloc.lottery.edit', Controllers\EditLotteryController::class)
         ->delete('/nodeloc/lottery/{id}', 'nodeloc.lottery.delete', Controllers\DeleteLotteryController::class)
         ->patch('/nodeloc/lottery/{id}/enter', 'nodeloc.lottery.enter', Controllers\EnterLotteryController::class),
-
+    (new Extend\ApiSerializer(UserSerializer::class))
+        ->attributes(AddLotteryCountAttributes::class),
     (new Extend\Model(Post::class))
         ->hasOne('lottery', Lottery::class, 'post_id', 'id'),
 

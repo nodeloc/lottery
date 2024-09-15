@@ -5,6 +5,7 @@
   "prettier": "@flarum/prettier-config",
   "dependencies": {
     "@flarum/prettier-config": "^1.0.0",
+    "@nodeloc/lottery": "file:",
     "dayjs": "^1.11.10",
     "flarum-tsconfig": "^1.0.2",
     "flarum-webpack-config": "^2.0.2",
