@@ -8,9 +8,11 @@ export default class EventCountDown extends Component {
         vnode.state.hours = Stream();
         vnode.state.minutes = Stream();
         vnode.state.seconds = Stream();
+        this.uniqueId = 'clockdiv-' + vnode.attrs.id; // Use the provided id
     }
     oncreate(vnode) {
         var deadline = vnode.attrs.endDate;
+
 
         function time_remaining(endtime) {
             var t = Date.parse(endtime) - Date.parse(new Date());
@@ -30,7 +32,7 @@ export default class EventCountDown extends Component {
             var minutes_span = clock.querySelector('.minutes');
             var seconds_span = clock.querySelector('.seconds');
 
-            function update_clock() {
+            function update_clock(id) {
                 var t = time_remaining(deadline);
                 days_span.innerHTML = t.days;
                 hours_span.innerHTML = ('0' + t.hours).slice(-2);
@@ -43,15 +45,15 @@ export default class EventCountDown extends Component {
                         elem.parentNode.removeChild(elem);
                     }
                     var finishText = app.translator.trans('nodeloc-lottery.forum.endDateText');
-                    var finishDiv = document.getElementById('clockdiv');
+                    var finishDiv = document.getElementById(id);
                     finishDiv.innerHTML = '<h1 class="letterpress">' + finishText + '</h1>';
                 }
             }
 
-            update_clock();
-            var timeinterval = setInterval(() => update_clock(), 1000);
+            update_clock(id);
+            var timeinterval = setInterval(() => update_clock(id), 1000);
         }
-        run_clock('clockdiv', deadline);
+        run_clock(this.uniqueId, deadline);
 
     }
     view(vnode) {
@@ -65,7 +67,7 @@ export default class EventCountDown extends Component {
         return (
             <div class="countdown-container">
                 <h2 class="event-text" id="titleEvent"><i class={fontAwIcon + " " + 'fontawicon'}></i>{wgEvents}</h2>
-                <div id="clockdiv">
+                <div class="clockdiv" id={this.uniqueId}>
                     <div class="cntdwn-widget">
                         <span class="days">{vnode.state.days()}</span>
                         <div class="smalltext">{wgDays}</div>

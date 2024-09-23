@@ -12,7 +12,7 @@ export default class ListLotteryModal extends Modal {
     super.oninit(vnode);
     this.loading = Stream(true);
     app.store
-      .find('nodeloc/lottery', this.attrs.lottery.id(), {
+      .find('nodeloc/lottery', this.attrs.lottery.data.id, {
         include: 'participants,participants.user,participants.status',
       })
       .then(() => this.loading(false))

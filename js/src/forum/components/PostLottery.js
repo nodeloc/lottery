@@ -35,7 +35,7 @@ export default class PostLottery extends Component {
     const endDate = dayjs(lottery.endDate());
     const hasEntered = lottery.lottery_participants()?.length > 0;
     return (
-      <div className="Post-lottery" data-id={lottery.id()}>
+      <div className="Post-lottery" data-id={lottery.data.id}>
         <div className="LotteryHeading">
           <h3 className="LotteryHeading-title">{lottery.prizes()}</h3>
             <Tooltip text={app.translator.trans('nodeloc-lottery.forum.public_lottery')}>
@@ -64,7 +64,7 @@ export default class PostLottery extends Component {
               {lottery.max_participants()<9999 &&(<>
                 <span class='min_participants'>{app.translator.trans('nodeloc-lottery.forum.modal.max_participants')}</span><span>{lottery.max_participants()}</span></>)}
             </div>
-            <EventCountDown endDate={endDate} />
+            <EventCountDown  id={lottery.data.id}  endDate={endDate} />
           </div>
           <div className="LotteryOptions">
             {
@@ -171,7 +171,7 @@ export default class PostLottery extends Component {
     return app
       .request({
         method: 'PATCH',
-        url: `${app.forum.attribute('apiUrl')}/nodeloc/lottery/${this.attrs.lottery.id()}/enter`,
+        url: `${app.forum.attribute('apiUrl')}/nodeloc/lottery/${this.attrs.lottery.data.id}/enter`,
       })
       .then((res) => {
         app.store.pushPayload(res);
