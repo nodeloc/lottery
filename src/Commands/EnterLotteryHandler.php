@@ -112,7 +112,7 @@ class EnterLotteryHandler
             ]);
         }
 
-        if($lottery->getAttribute('enter_count')>$lottery->getAttribute('max_participants')){
+        if($lottery->getAttribute('enter_count')>=$lottery->getAttribute('max_participants')){
             throw new ValidationException([
                 'lottery' => $this->translator->trans('nodeloc-lottery.forum.too_many_participants'),
             ]);
