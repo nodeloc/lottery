@@ -47,12 +47,6 @@
         },
         "flagrow": {
             "discuss": "https://www.nodeloc.com"
-        },
-        "flarum-cli": {
-            "modules": {
-                "githubActions": true,
-                "backendTesting": true
-            }
         }
     }
 }
