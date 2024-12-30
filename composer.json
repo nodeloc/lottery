@@ -19,8 +19,8 @@
     ],
     "require": {
         "flarum/core": "^1.3.0",
-        "antoinefr/flarum-ext-money": "^1.3.0",
-        "mattoid/flarum-ext-money-history": "^1.1.1"
+        "antoinefr/flarum-ext-money": "*",
+        "mattoid/flarum-ext-money-history": "*"
     },
     "authors": [
         {

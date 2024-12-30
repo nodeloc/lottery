@@ -30,6 +30,7 @@ export default class PostLottery extends Component {
 
   view() {
     const lottery = this.attrs.lottery;
+    const hasEnded = lottery.hasEnded();
     const options = lottery.options() || [];
     const infoItems = this.infoItems();
     const endDate = dayjs(lottery.endDate());
@@ -64,7 +65,7 @@ export default class PostLottery extends Component {
               {lottery.max_participants()<9999 &&(<>
                 <span class='min_participants'>{app.translator.trans('nodeloc-lottery.forum.modal.max_participants')}</span><span>{lottery.max_participants()}</span></>)}
             </div>
-            <EventCountDown  id={lottery.data.id}  endDate={endDate} />
+            <EventCountDown  id={lottery.data.id}  endDate={endDate} hasEnded = {hasEnded} />
           </div>
           <div className="LotteryOptions">
             {

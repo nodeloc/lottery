@@ -12,48 +12,53 @@ export default class EventCountDown extends Component {
     }
     oncreate(vnode) {
         var deadline = vnode.attrs.endDate;
-
+        var hadEnded = vnode.attrs.hasEnded;
 
         function time_remaining(endtime) {
+            if (!endtime) return { total: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
             var t = Date.parse(endtime) - Date.parse(new Date());
-            var seconds = Math.floor((t / 1000) % 60);
-            var minutes = Math.floor((t / 1000 / 60) % 60);
-            var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
-            var days = Math.floor(t / (1000 * 60 * 60 * 24));
-            return {total: t, days: days, hours: hours, minutes: minutes, seconds: seconds};
+            return {
+                total: t,
+                days: Math.floor(t / (1000 * 60 * 60 * 24)),
+                hours: Math.floor((t / (1000 * 60 * 60)) % 24),
+                minutes: Math.floor((t / (1000 * 60)) % 60),
+                seconds: Math.floor((t / 1000) % 60),
+            };
         }
 
-        function run_clock(id, endtime) {
+        function update_clock(id, hadEnded, deadline) {
             var clock = document.getElementById(id);
-
-            // get spans where our clock numbers are held
+            if (!clock) return;
             var days_span = clock.querySelector('.days');
             var hours_span = clock.querySelector('.hours');
             var minutes_span = clock.querySelector('.minutes');
             var seconds_span = clock.querySelector('.seconds');
 
-            function update_clock(id) {
-                var t = time_remaining(deadline);
-                days_span.innerHTML = t.days;
-                hours_span.innerHTML = ('0' + t.hours).slice(-2);
-                minutes_span.innerHTML = ('0' + t.minutes).slice(-2);
-                seconds_span.innerHTML = ('0' + t.seconds).slice(-2);
-                if (t.total < 0) {
-                    clearInterval(timeinterval);
-                    if (document.getElementById('titleEvent')) {
-                        var elem = document.getElementById('titleEvent');
-                        elem.parentNode.removeChild(elem);
-                    }
-                    var finishText = app.translator.trans('nodeloc-lottery.forum.endDateText');
-                    var finishDiv = document.getElementById(id);
-                    finishDiv.innerHTML = '<h1 class="letterpress">' + finishText + '</h1>';
-                }
-            }
+            var t = hadEnded ? { total: -1, days: 0, hours: 0, minutes: 0, seconds: 0 } : time_remaining(deadline);
+            days_span.innerHTML = t.days;
+            hours_span.innerHTML = ('0' + t.hours).slice(-2);
+            minutes_span.innerHTML = ('0' + t.minutes).slice(-2);
+            seconds_span.innerHTML = ('0' + t.seconds).slice(-2);
 
-            update_clock(id);
-            var timeinterval = setInterval(() => update_clock(id), 1000);
+            if (t.total < 0) {
+                clearInterval(clock.timeinterval);
+                var finishText = app.translator.trans('nodeloc-lottery.forum.endDateText');
+                clock.innerHTML = `<h1 class="letterpress">${finishText}</h1>`;
+            }
         }
-        run_clock(this.uniqueId, deadline);
+
+        function run_clock(id, deadline, hadEnded) {
+            function tick() {
+                update_clock(id, hadEnded, deadline);
+            }
+            tick();
+            var clock = document.getElementById(id);
+            clock.timeinterval = setInterval(tick, 1000);
+        }
+
+        // 调用
+        run_clock(this.uniqueId, deadline, hadEnded);
+
 
     }
     view(vnode) {

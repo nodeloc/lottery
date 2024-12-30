@@ -9,6 +9,7 @@ use Flarum\Group\Group;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -21,12 +22,13 @@ use Mattoid\MoneyHistory\model\UserMoneyHistory;
 use Nodeloc\Lottery\Notification\FailLotteryBlueprint;
 use Nodeloc\Lottery\Notification\FinishLotteryBlueprint;
 use Symfony\Contracts\Translation\TranslatorInterface;
-
+use Xypp\Collector\Data\ConditionData;
+use Xypp\Collector\Event\UpdateCondition;
 class DrawCommand extends Command
 {
     protected $signature = 'nodeloc:lottery:draw';
     protected $description = 'Draw lottery by date.';
-
+    protected $events;
     protected $prefix = 'Lottery #';
     /**
      * @var SettingsRepositoryInterface
@@ -38,11 +40,12 @@ class DrawCommand extends Command
      */
     private $notifications;
     protected $translator;
-    public function __construct(SettingsRepositoryInterface $settings, NotificationSyncer $notifications, TranslatorInterface $translator)
+    public function __construct(SettingsRepositoryInterface $settings, Dispatcher $events,  NotificationSyncer $notifications, TranslatorInterface $translator)
     {
         parent::__construct();
         $this->settings = $settings;
         $this->notifications = $notifications;
+        $this->events = $events;
         $this->translator = $translator;
         $this->notifications = $notifications;
     }
@@ -59,11 +62,9 @@ class DrawCommand extends Command
             }
             // 检查结束时间是否已经大于当前时间
             $currentTime = Carbon::now();
-            if ($lottery->end_date->lt($currentTime)) {
-                // 查询参与人数是否大于最少要求人数
-                $participantsCount = $lottery->participants()->count();
+            $participantsCount = $lottery->participants()->count();
+            if ($lottery->end_date->lt($currentTime) || $participantsCount >= $lottery->max_participants) {
                 $minParticipants = $lottery->min_participants;
-
                 if ($participantsCount >= $minParticipants) {
                     // 计算参与金额总数
                     $totalEntranceFee = $participantsCount * $lottery->price;
@@ -105,6 +106,15 @@ class DrawCommand extends Command
                     $lottery->user->increment('money', $totalEntranceFee);
                     // 增加抽奖次数
                     $lottery->user->increment('lottery_count', 1);
+                    // 增加小鱼的统计数据
+                    $this->events->dispatch(
+                        new UpdateCondition(
+                            $lottery->user,
+                            [new ConditionData('lottery_sent', 1)]
+                        )
+                    );
+
+
                     $source = 'LOTTERY_IN';
                     $sourceDesc = $this->translator->trans("antoinefr-money.forum.history.lottery-in");
                     $money =$totalEntranceFee;

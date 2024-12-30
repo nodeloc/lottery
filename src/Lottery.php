@@ -59,7 +59,7 @@ class Lottery extends AbstractModel
      */
     public function hasEnded()
     {
-        return $this->end_date !== null && $this->end_date->isPast();
+        return $this->status==1 || $this->status==2 ;
     }
 
     /**

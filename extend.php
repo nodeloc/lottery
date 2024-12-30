@@ -18,6 +18,8 @@ use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Api\Serializer\PostSerializer;
 use Flarum\Api\Serializer\UserSerializer;
 use Flarum\User\User;
+use Nodeloc\Lottery\Condition\LotteryAttendCondition;
+use Nodeloc\Lottery\Condition\LotterySentCondition;
 use Flarum\Discussion\Discussion;
 use Flarum\Discussion\Event\Saving;
 use Flarum\Extend;
@@ -26,6 +28,7 @@ use Flarum\Post\Post;
 use Flarum\Settings\Event\Saved as SettingsSaved;
 use Nodeloc\Lottery\Api\Controllers;
 use Nodeloc\Lottery\Api\Serializers\LotterySerializer;
+use Xypp\Collector\Extend\ConditionProvider;
 
 return [
     (new Extend\Frontend('forum'))
@@ -57,7 +60,9 @@ return [
         ->listen(Saving::class,Listeners\SaveLotteryToDiscussion::class)
         ->listen(PostSaving::class, Listeners\SaveLotteryToDatabase::class)
         ->listen(SettingsSaved::class, Listeners\ClearFormatterCache::class),
-
+    (new ConditionProvider)
+        ->provide(LotterySentCondition::class)
+        ->provide(LotteryAttendCondition::class),
     (new Extend\ApiSerializer(DiscussionSerializer::class))
         ->attributes(Api\AddDiscussionAttributes::class),
 
