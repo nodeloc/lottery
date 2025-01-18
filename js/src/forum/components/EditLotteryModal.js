@@ -27,7 +27,39 @@ export default class EditLotteryModal extends CreateLotteryModal {
   title() {
     return app.translator.trans('nodeloc-lottery.forum.modal.edit_title');
   }
+  addOption() {
+    const max = 5;
 
+    if (this.options.length < max) {
+      // 添加新的 Stream
+      this.operator_type.push(Stream('money'));
+      this.operator.push(Stream('1'));
+      this.operator_value.push(Stream('1'));
+
+      // 创建新的 option 对象并添加到 options 数组
+      this.options.push({
+        data: {
+          attributes: {
+            operator_type: 'money',
+            operator: '1',
+            operator_value: '1'
+          }
+        },
+        operator_type: () => this.operator_type[this.operator_type.length - 1](),
+        operator: () => this.operator[this.operator.length - 1](),
+        operator_value: () => this.operator_value[this.operator_value.length - 1]()
+      });
+    } else {
+      alert(extractText(app.translator.trans('nodeloc-lottery.forum.modal.max', {max})));
+    }
+  }
+
+  removeOption(option) {
+    this.operator_type.splice(option, 1);
+    this.operator.splice(option, 1);
+    this.operator_value.splice(option, 1);
+    this.options.splice(option, 1);
+  }
   displayOptions() {
     return this.options.map((options, i) => (
       <div className="Form-group MinMaxSelector">
